@@ -1,24 +1,63 @@
 import { useState } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { Controller, useForm } from "react-hook-form";
+import {
+  BsFillCircleFill,
+  BsFillPersonFill,
+  BsThreeDotsVertical,
+} from "react-icons/bs";
 import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
   Col,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
 } from "reactstrap";
-import { DefaultLayout } from "../../components/DefaultLayout";
 
 function Dashboard() {
   const messengers = [
     {
-      name: 1,
+      name: "Lead's 47",
+      message:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+      totalMessages: 199,
+      totalSend: 99,
+      totalPending: 100,
+      running: false,
+    },
+    {
+      name: "Notícias diárias",
+      message:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+      totalMessages: 199,
+      totalSend: 99,
+      totalPending: 100,
+      running: true,
+    },
+    {
+      name: "Alertas",
+      message:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+      totalMessages: 199,
+      totalSend: 99,
+      totalPending: 100,
+      running: false,
+    },
+    {
+      name: "Reuniões",
       message:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
       totalMessages: 199,
@@ -26,58 +65,316 @@ function Dashboard() {
       totalPending: 100,
     },
     {
-      name: 1,
+      name: "CECOM",
       message:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
       totalMessages: 199,
       totalSend: 99,
       totalPending: 100,
+      running: false,
     },
     {
-      name: 1,
+      name: "Editais",
       message:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
       totalMessages: 199,
       totalSend: 99,
       totalPending: 100,
+      running: false,
     },
     {
-      name: 1,
+      name: "Curredoria",
       message:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
       totalMessages: 199,
       totalSend: 99,
       totalPending: 100,
-    },
-    {
-      name: 1,
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-    },
-    {
-      name: 1,
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-    },
-    {
-      name: 1,
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
+      running: false,
     },
   ];
 
+  // States
+  const [dropdowmNew, setDropdownNew] = useState(false);
+  const [openAddMessengerModal, setOpenAddMessengerModal] = useState(false);
+
+  // Arrow functions
+  const toggleDropdownNew = () => setDropdownNew((curr) => !curr);
+  const handleOpenAddMessengerModal = () =>
+    setOpenAddMessengerModal((curr) => !curr);
+
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <header
+      <Header />
+
+      {openAddMessengerModal && (
+        <AddMessenger handleClose={handleOpenAddMessengerModal} />
+      )}
+
+      <main
+        style={{
+          height: "90vh",
+          whiteSpace: "nowrap",
+          overflow: "auto",
+        }}
+      >
+        <Row className="m-1">
+          <Col className="d-flex justify-content-end">
+            <Dropdown
+              isOpen={dropdowmNew}
+              toggle={toggleDropdownNew}
+              direction="start"
+            >
+              <DropdownToggle className="px-4 py-1" color="primary">
+                Novo
+              </DropdownToggle>
+              <DropdownMenu className="mx-1">
+                <DropdownItem header>Opções</DropdownItem>
+                <DropdownItem>Número</DropdownItem>
+                <DropdownItem onClick={handleOpenAddMessengerModal}>
+                  Mensageiro
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </Col>
+        </Row>
+
+        <Row className="m-1">
+          {messengers.map((messenger) => {
+            // States
+            const [dropdownOpen, setDropdownOpen] = useState(false);
+
+            // Arrow functions
+            const toggle = () => setDropdownOpen((curr) => !curr);
+
+            return (
+              <Col md={4} key={messenger.name}>
+                <Card className="m-1">
+                  <CardHeader>
+                    <Row>
+                      <Col>
+                        <span>{messenger.name}</span>
+                      </Col>
+                      <Col className="d-flex justify-content-end">
+                        <Dropdown
+                          isOpen={dropdownOpen}
+                          toggle={toggle}
+                          direction="start"
+                        >
+                          <DropdownToggle
+                            color="link"
+                            className="shadow-none text-dark"
+                          >
+                            <BsThreeDotsVertical />
+                          </DropdownToggle>
+                          <DropdownMenu flip={false}>
+                            <DropdownItem header>Opções</DropdownItem>
+                            <DropdownItem>Parar</DropdownItem>
+                            <DropdownItem>Iniciar</DropdownItem>
+                            <DropdownItem>Remover</DropdownItem>
+                            <DropdownItem>Editar</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </Col>
+                    </Row>
+                  </CardHeader>
+                  <CardBody>
+                    <Row>
+                      <Col md={6}>
+                        <span className="h1">{messenger.totalPending}</span>{" "}
+                        Restantes
+                      </Col>
+
+                      <Col
+                        md={6}
+                        className="d-flex justify-content-start align-items-end"
+                      >
+                        <span className="d-flex flex-row">
+                          Rodando:{" "}
+                          <BsFillCircleFill
+                            className={`m-1 ${
+                              messenger.running ? "text-success" : "text-danger"
+                            }`}
+                          />
+                        </span>
+                      </Col>
+
+                      <Col>
+                        <span className="p-1">
+                          Total: {messenger.totalMessages}
+                        </span>
+                      </Col>
+
+                      <Col>
+                        <span>Enviadas: {messenger.totalSend}</span>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      </main>
+    </div>
+  );
+}
+
+function Header() {
+  // States
+  const [dropdownUser, setDropdownUser] = useState(false);
+
+  // Arrow functions
+  const toggleUser = () => setDropdownUser((curr) => !curr);
+
+  return (
+    <Row className="m-0" style={{ height: "8vh" }}>
+      <Col className="d-flex justify-content-end align-items-center">
+        <BsFillPersonFill />
+
+        <Dropdown
+          className="mx-1"
+          isOpen={dropdownUser}
+          toggle={toggleUser}
+          direction="down"
+        >
+          <DropdownToggle split color="link" className="shadow-none">
+            <span className="text-truncate"> Gabriel P.</span>
+          </DropdownToggle>
+
+          <DropdownMenu>
+            <DropdownItem>Sair</DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </Col>
+    </Row>
+  );
+}
+
+interface AddMessengerProps {
+  handleClose: () => void;
+}
+
+interface NewMessenger {
+  name: string;
+  message: string;
+  start: Date;
+  end: Date;
+  file: File;
+}
+
+function AddMessenger({ handleClose }: AddMessengerProps) {
+  // Hooks
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<NewMessenger>();
+
+  // Functions
+  function handleOnSubmit(data) {}
+
+  return (
+    <Modal isOpen={true}>
+      <ModalHeader>Novo messageiro</ModalHeader>
+      <ModalBody>
+        <Form>
+          <FormGroup>
+            <Label htmlFor="name">Nome</Label>
+            <Controller
+              name="name"
+              control={control}
+              rules={{ required: "Campo não pode estar vazio" }}
+              render={({ field: { onChange } }) => (
+                <Input
+                  name="name"
+                  id="name"
+                  onChange={onChange}
+                  invalid={errors.name ? true : false}
+                />
+              )}
+            />
+            <FormFeedback>{errors.name?.message}</FormFeedback>
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor="message">Mensagem</Label>
+            <Controller
+              name="message"
+              rules={{ required: "Campo não pode estar vazio" }}
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Input
+                  name="message"
+                  type="textarea"
+                  id="message"
+                  onChange={onChange}
+                  invalid={errors.message ? true : false}
+                />
+              )}
+            />
+            <FormFeedback>{errors.message?.message}</FormFeedback>
+          </FormGroup>
+
+          <Row>
+            <Col>
+              <FormGroup>
+                <Label htmlFor="start">Início</Label>
+                <Controller
+                  control={control}
+                  name="start"
+                  rules={{ required: "Campo não pode estar vazio" }}
+                  render={({ field: { onChange } }) => (
+                    <Input
+                      type="datetime-local"
+                      name="start"
+                      id="start"
+                      onChange={onChange}
+                      invalid={errors.start ? true : false}
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormFeedback>{errors.start?.message}</FormFeedback>
+            </Col>
+            <Col>
+              <FormGroup>
+                <Label htmlFor="start">Término</Label>
+                <Controller
+                  control={control}
+                  name="end"
+                  rules={{ required: "Campo não pode estar vazio" }}
+                  render={({ field: { onChange } }) => (
+                    <Input
+                      type="datetime-local"
+                      name="end"
+                      id="end"
+                      onChange={onChange}
+                      invalid={errors.end ? true : false}
+                    />
+                  )}
+                />
+              </FormGroup>
+              <FormFeedback>{errors.end?.message}</FormFeedback>
+            </Col>
+          </Row>
+        </Form>
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={handleClose} color="link">
+          Cancelar
+        </Button>
+        <Button color="primary" onClick={handleSubmit(handleOnSubmit)}>
+          Criar
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+}
+
+export { Dashboard };
+
+{
+  /* <header
         style={{ height: "10vh", background: "green" }}
         className="w-full h-16 z-40 flex items-center justify-between"
       >
@@ -144,69 +441,5 @@ function Dashboard() {
             </button>
           </div>
         </div>
-      </header>
-
-      <main
-        style={{
-          height: "90vh",
-          whiteSpace: "nowrap",
-          overflow: "auto",
-          background: "blue",
-        }}
-      >
-        <Row className="m-1">
-          {messengers.map((messenger) => {
-            // States
-            const [dropdownOpen, setDropdownOpen] = useState(false);
-
-            // Arrow functions
-            const toggle = () => setDropdownOpen((curr) => !curr);
-
-            return (
-              <Col md={4} key={messenger.name}>
-                <Card className="m-1">
-                  <CardHeader>
-                    <Row>
-                      <Col>
-                        <span>{messenger.name}</span>
-                      </Col>
-                      <Col className="d-flex justify-content-end">
-                        <Dropdown
-                          isOpen={dropdownOpen}
-                          toggle={toggle}
-                          direction="start"
-                        >
-                          <DropdownToggle color="link" className="shadow-none text-dark">
-                            <BsThreeDotsVertical />
-                          </DropdownToggle>
-                          <DropdownMenu flip={false}>
-                            <DropdownItem header>Opções</DropdownItem>
-                            <DropdownItem>Parar</DropdownItem>
-                            <DropdownItem>Iniciar</DropdownItem>
-                            <DropdownItem>Remover</DropdownItem>
-                            <DropdownItem>Editar</DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                      </Col>
-                    </Row>
-                  </CardHeader>
-                  <CardBody></CardBody>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </main>
-    </div>
-  );
+      </header> */
 }
-
-function Header() {
-  return <></>;
-}
-
-function MessengerCard() {
-  return <></>;
-}
-
-export { Dashboard };
