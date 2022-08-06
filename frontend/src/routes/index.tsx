@@ -1,17 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import App from "../App";
-import { Dashboard } from "../pages/dashboard";
-import Home from "../pages/Home";
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Dashboard } from '../pages/dashboard'
+import Home from '../pages/Home'
 import Login from "../pages/Login";
-import { BsFillXDiamondFill, BsStack } from "react-icons/bs";
+import { useId } from 'react'
 
 export default function AppRoutes() {
+
   return (
     <BrowserRouter>
       <Routes>
-        {routesData.map(({ path, element }) => (
-          <Route path={path} element={element} />
-        ))}
+        {
+          routesData.map(({ path, element }) => {
+            const id = useId()
+            
+            return <Route key={id} path={path} element={element} />
+          })
+        }
       </Routes>
     </BrowserRouter>
   );

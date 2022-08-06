@@ -1,10 +1,13 @@
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import {
-  BsFillCircleFill,
-  BsFillPersonFill,
-  BsThreeDotsVertical,
-} from "react-icons/bs";
+	BsFillCircleFill,
+	BsFillPersonFill,
+	BsThreeDotsVertical,
+} from 'react-icons/bs'
+import { useDispatch } from 'react-redux';
+import ReactSelect from "react-select";
+import { toast } from "react-toastify";
 import {
   Button,
   Card,
@@ -19,96 +22,106 @@ import {
   FormFeedback,
   FormGroup,
   Input,
+  InputGroup,
   Label,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
   Row,
+  Spinner,
 } from "reactstrap";
+import { setSelectedMessengerId } from '../../redux/reducers/dashboardReducer';
+
+const messengers = [
+  {
+    id: 1,
+    name: "Lead's 47",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+    running: false,
+  },
+  {
+    id: 2,
+    name: "Notícias diárias",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+    running: true,
+  },
+  {
+    id: 3,
+    name: "Alertas",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+    running: false,
+  },
+  {
+    id: 4,
+    name: "Reuniões",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+  },
+  {
+    id: 5,
+    name: "CECOM",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+    running: false,
+  },
+  {
+    id: 6,
+    name: "Editais",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+    running: false,
+  },
+  {
+    id: 7,
+    name: "Curredoria",
+    message:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
+    totalMessages: 199,
+    totalSend: 99,
+    totalPending: 100,
+    running: false,
+  },
+];
 
 function Dashboard() {
-  const messengers = [
-    {
-      name: "Lead's 47",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-      running: false,
-    },
-    {
-      name: "Notícias diárias",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-      running: true,
-    },
-    {
-      name: "Alertas",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-      running: false,
-    },
-    {
-      name: "Reuniões",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-    },
-    {
-      name: "CECOM",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-      running: false,
-    },
-    {
-      name: "Editais",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-      running: false,
-    },
-    {
-      name: "Curredoria",
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!",
-      totalMessages: 199,
-      totalSend: 99,
-      totalPending: 100,
-      running: false,
-    },
-  ];
-
   // States
   const [dropdowmNew, setDropdownNew] = useState(false);
   const [openAddMessengerModal, setOpenAddMessengerModal] = useState(false);
+  const [openNewPhoneNumberModal, setOpenNewPhoneNumberModal] = useState(false);
 
   // Arrow functions
   const toggleDropdownNew = () => setDropdownNew((curr) => !curr);
-  const handleOpenAddMessengerModal = () =>
-    setOpenAddMessengerModal((curr) => !curr);
+  const handleOpenAddMessengerModal = () => setOpenAddMessengerModal((curr) => !curr);
+  const handleOpenNewPhoneNumberModal = () => setOpenNewPhoneNumberModal((curr) => !curr);
 
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <Header />
 
-      {openAddMessengerModal && (
-        <AddMessenger handleClose={handleOpenAddMessengerModal} />
-      )}
+      {openAddMessengerModal && <AddMessenger handleClose={handleOpenAddMessengerModal} />}
+      {openNewPhoneNumberModal && <NewPhoneNumber handleClose={handleOpenNewPhoneNumberModal} />}
 
       <main
         style={{
@@ -129,7 +142,7 @@ function Dashboard() {
               </DropdownToggle>
               <DropdownMenu className="mx-1">
                 <DropdownItem header>Opções</DropdownItem>
-                <DropdownItem>Número</DropdownItem>
+                <DropdownItem onClick={handleOpenNewPhoneNumberModal}>Número</DropdownItem>
                 <DropdownItem onClick={handleOpenAddMessengerModal}>
                   Mensageiro
                 </DropdownItem>
@@ -140,11 +153,16 @@ function Dashboard() {
 
         <Row className="m-1">
           {messengers.map((messenger) => {
+            // Redux
+            const dispatch = useDispatch()
+
             // States
             const [dropdownOpen, setDropdownOpen] = useState(false);
 
             // Arrow functions
             const toggle = () => setDropdownOpen((curr) => !curr);
+            const handleSelectedMessenger = () => dispatch(setSelectedMessengerId(String(messenger.id)))
+
 
             return (
               <Col md={4} key={messenger.name}>
@@ -191,9 +209,8 @@ function Dashboard() {
                         <span className="d-flex flex-row">
                           Rodando:{" "}
                           <BsFillCircleFill
-                            className={`m-1 ${
-                              messenger.running ? "text-success" : "text-danger"
-                            }`}
+                            className={`m-1 ${messenger.running ? "text-success" : "text-danger"
+                              }`}
                           />
                         </span>
                       </Col>
@@ -254,12 +271,23 @@ interface AddMessengerProps {
   handleClose: () => void;
 }
 
+const daysOfWeekOptions = [
+  { label: "Domingo", value: "sunday" },
+  { label: "Segunda-feira", value: "monday" },
+  { label: "Terça-feira", value: "tuesday" },
+  { label: "Quarta-feira", value: "wednesday" },
+  { label: "Quinta-feira", value: "thursday" },
+  { label: "Sexta-feira", value: "friday" },
+  { label: "Sábado", value: "saturday" },
+];
+
 interface NewMessenger {
   name: string;
   message: string;
   start: Date;
   end: Date;
   file: File;
+  daysOfWeek: { label: string; value: string }[];
 }
 
 function AddMessenger({ handleClose }: AddMessengerProps) {
@@ -268,13 +296,48 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
     control,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm<NewMessenger>();
 
+  // States
+  const [loadingFile, setLoadingFile] = useState(false);
+
   // Functions
-  function handleOnSubmit(data) {}
+  function handleOnSubmit(data: NewMessenger) {
+    console.log(data);
+  }
+
+  function handleOnFileLoaded(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files ? e.target.files[0] : null;
+    const EXTENSIONS_ACCEPTED = ["text/csv", "text/plain"];
+
+    try {
+      if (!file) throw "Arquivo não carregado";
+      if (!EXTENSIONS_ACCEPTED.includes(file.type))
+        throw `Formato '${file.type}' não suportado`;
+
+      setLoadingFile((curr) => !curr);
+      setValue("file", file);
+
+      const reader = new FileReader();
+      reader.onload = ({ target }) => {
+        const content = target?.result;
+
+        if (!content) return toast.error("Arquivo vazio");
+
+        setTimeout(() => setLoadingFile((curr) => !curr), 3000);
+      };
+
+      reader.readAsText(file);
+    } catch (error: any) {
+      toast.error(error as string);
+
+      return;
+    }
+  }
 
   return (
-    <Modal isOpen={true}>
+    <Modal isOpen size="lg">
       <ModalHeader>Novo messageiro</ModalHeader>
       <ModalBody>
         <Form>
@@ -322,8 +385,8 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
                 <Controller
                   control={control}
                   name="start"
-                  rules={{ required: "Campo não pode estar vazio" }}
-                  render={({ field: { onChange } }) => (
+                  rules={{ required: "Campo não pode ser vazio" }}
+                  render={({ field: { onChange, value } }) => (
                     <Input
                       type="datetime-local"
                       name="start"
@@ -333,8 +396,8 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
                     />
                   )}
                 />
+                <FormFeedback>{errors.start?.message}</FormFeedback>
               </FormGroup>
-              <FormFeedback>{errors.start?.message}</FormFeedback>
             </Col>
             <Col>
               <FormGroup>
@@ -342,7 +405,7 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
                 <Controller
                   control={control}
                   name="end"
-                  rules={{ required: "Campo não pode estar vazio" }}
+                  rules={{ required: "Campo não pode ser vazio" }}
                   render={({ field: { onChange } }) => (
                     <Input
                       type="datetime-local"
@@ -353,8 +416,58 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
                     />
                   )}
                 />
+                <FormFeedback>{errors.end?.message}</FormFeedback>
               </FormGroup>
-              <FormFeedback>{errors.end?.message}</FormFeedback>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <FormGroup>
+                <Label>Dias da semana</Label>
+                <Controller
+                  control={control}
+                  name="daysOfWeek"
+                  render={({ field: { onChange } }) => (
+                    <ReactSelect
+                      options={daysOfWeekOptions}
+                      isMulti
+                      isClearable
+                      closeMenuOnSelect={false}
+                      noOptionsMessage={() => "Acabou os dias da semana :/"}
+                      onChange={onChange}
+                    />
+                  )}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Label htmlFor="file">Arquivo com os números</Label>
+              <Controller
+                control={control}
+                name="file"
+                rules={{ required: "Campo não pode ser vazio" }}
+                render={() => (
+                  <InputGroup>
+                    <Input
+                      name="file"
+                      id="file"
+                      type="file"
+                      accept="text/*"
+                      className="shadow-none"
+                      onChange={handleOnFileLoaded}
+                    />
+                    {loadingFile && (
+                      <Button disabled outline color="primary shadow">
+                        <Spinner size="sm" color="primary" />
+                      </Button>
+                    )}
+                  </InputGroup>
+                )}
+              />
             </Col>
           </Row>
         </Form>
@@ -371,75 +484,64 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
   );
 }
 
-export { Dashboard };
-
-{
-  /* <header
-        style={{ height: "10vh", background: "green" }}
-        className="w-full h-16 z-40 flex items-center justify-between"
-      >
-        <div className="block lg:hidden ml-6">
-          <button className="flex p-2 items-center rounded-full bg-white shadow text-gray-500 text-md">
-            <svg
-              width={20}
-              height={20}
-              className="text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 1792 1792"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M1664 1344v128q0 26-19 45t-45 19h-1408q-26 0-45-19t-19-45v-128q0-26 19-45t45-19h1408q26 0 45 19t19 45zm0-512v128q0 26-19 45t-45 19h-1408q-26 0-45-19t-19-45v-128q0-26 19-45t45-19h1408q26 0 45 19t19 45zm0-512v128q0 26-19 45t-45 19h-1408q-26 0-45-19t-19-45v-128q0-26 19-45t45-19h1408q26 0 45 19t19 45z"></path>
-            </svg>
-          </button>
-        </div>
-        <div className="relative z-20 flex flex-col justify-end h-full px-3 md:w-full">
-          <div className="relative p-1 flex items-center w-full space-x-4 justify-end">
-            <button className="flex p-2 items-center rounded-full text-gray-400 hover:text-gray-700 bg-white shadow text-md">
-              <svg
-                width={20}
-                height={20}
-                className=""
-                fill="currentColor"
-                viewBox="0 0 1792 1792"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M1520 1216q0-40-28-68l-208-208q-28-28-68-28-42 0-72 32 3 3 19 18.5t21.5 21.5 15 19 13 25.5 3.5 27.5q0 40-28 68t-68 28q-15 0-27.5-3.5t-25.5-13-19-15-21.5-21.5-18.5-19q-33 31-33 73 0 40 28 68l206 207q27 27 68 27 40 0 68-26l147-146q28-28 28-67zm-703-705q0-40-28-68l-206-207q-28-28-68-28-39 0-68 27l-147 146q-28 28-28 67 0 40 28 68l208 208q27 27 68 27 42 0 72-31-3-3-19-18.5t-21.5-21.5-15-19-13-25.5-3.5-27.5q0-40 28-68t68-28q15 0 27.5 3.5t25.5 13 19 15 21.5 21.5 18.5 19q33-31 33-73zm895 705q0 120-85 203l-147 146q-83 83-203 83-121 0-204-85l-206-207q-83-83-83-203 0-123 88-209l-88-88q-86 88-208 88-120 0-204-84l-208-208q-84-84-84-204t85-203l147-146q83-83 203-83 121 0 204 85l206 207q83 83 83 203 0 123-88 209l88 88q86-88 208-88 120 0 204 84l208 208q84 84 84 204z"></path>
-              </svg>
-            </button>
-            <button className="flex p-2 items-center rounded-full bg-white shadow text-gray-400 hover:text-gray-700 text-md">
-              <svg
-                width={20}
-                height={20}
-                className="text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 1792 1792"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M912 1696q0-16-16-16-59 0-101.5-42.5t-42.5-101.5q0-16-16-16t-16 16q0 73 51.5 124.5t124.5 51.5q16 0 16-16zm816-288q0 52-38 90t-90 38h-448q0 106-75 181t-181 75-181-75-75-181h-448q-52 0-90-38t-38-90q50-42 91-88t85-119.5 74.5-158.5 50-206 19.5-260q0-152 117-282.5t307-158.5q-8-19-8-39 0-40 28-68t68-28 68 28 28 68q0 20-8 39 190 28 307 158.5t117 282.5q0 139 19.5 260t50 206 74.5 158.5 85 119.5 91 88z"></path>
-              </svg>
-            </button>
-            <span className="w-1 h-8 rounded-lg bg-gray-200"></span>
-            <a href="#" className="block relative">
-              <img
-                alt="profil"
-                src="/images/person/1.jpg"
-                className="mx-auto object-cover rounded-full h-10 w-10 "
-              />
-            </a>
-            <button className="flex items-center text-gray-500 dark:text-white text-md">
-              Charlie R
-              <svg
-                width={20}
-                height={20}
-                className="ml-2 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 1792 1792"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M1408 704q0 26-19 45l-448 448q-19 19-45 19t-45-19l-448-448q-19-19-19-45t19-45 45-19h896q26 0 45 19t19 45z"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header> */
+interface NewPhoneNumberProps {
+  handleClose: () => void;
 }
+
+interface PhoneNumber {
+  phone: string;
+}
+
+function NewPhoneNumber({ handleClose }: NewPhoneNumberProps) {
+  // Hooks
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PhoneNumber>();
+
+  // Functions
+  function handleOnSubmit(data: PhoneNumber) {
+    console.log(data);
+  }
+
+  return (
+    <Modal isOpen={true} size="sm">
+      <ModalHeader>Novo número de celular</ModalHeader>
+
+      <ModalBody>
+        <Form>
+          <Row>
+            <Col>
+              <FormGroup>
+                <Label htmlFor="phone">Celular</Label>
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({ field: { onChange } }) => (
+                    <Input id="phone" name="phone" onChange={onChange} />
+                  )}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+        </Form>
+      </ModalBody>
+
+      <ModalFooter>
+        <Button color="link" onClick={handleClose} type="button">
+          Cancelar
+        </Button>
+        <Button
+          type="submit"
+          color="primary"
+          onClick={handleSubmit(handleOnSubmit)}
+        >
+          Adicionar
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+}
+
+export { Dashboard };
