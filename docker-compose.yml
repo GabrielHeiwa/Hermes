@@ -1,0 +1,84 @@
+version: '3.6'
+name: hermes
+
+networks:
+  traefik-proxy:
+    external:
+      true
+
+  internal:
+    external:
+      false
+
+services:
+  hermes-postgres:
+    image: postgres:12
+    container_name: hermes-postgres
+    restart: always
+    volumes:
+    - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - internal
+  
+  hermes-hasura:
+    image: hasura/graphql-engine:v2.9.0
+    container_name: hermes-hasura
+    depends_on:
+    - "hermes-postgres"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@hermes-postgres/${POSTGRES_DB}
+      PG_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+    networks:
+      - internal
+      - traefik-proxy
+    labels:
+      - traefik.port=8080
+      - traefik.http.routers.hermes-hasura.tls=${TLS}
+      - traefik.http.routers.hermes-hasura.entrypoints=${ENTRYPOINTS}
+      - traefik.http.routers.hermes-hasura.rule=Host(`${URL_PREFIX}.hermes-hasura.${URL_POSFIX}`)
+      - traefik.http.routers.hermes-hasura.tls.certresolver=${CERT_RESOLVER}
+      - traefik.http.services.hermes-hasura.loadbalancer.server.port=8080
+    
+  hermes-backend:
+    container_name: hermes-backend
+    build: 
+      context:
+        ./backend
+    networks:
+      - internal
+      - traefik-proxy
+    labels:
+      - traefik.port=${BACKEND_PORT}
+      - traefik.http.routers.hermes-backend.tls=${TLS}
+      - traefik.http.routers.hermes-backend.entrypoints=${ENTRYPOINTS}
+      - traefik.http.routers.hermes-backend.rule=Host(`${URL_PREFIX}.hermes-backend.${URL_POSFIX}`)
+      - traefik.http.routers.hermes-backend.tls.certresolver=${CERT_RESOLVER}
+      - traefik.http.services.hermes-backend.loadbalancer.server.port=${BACKEND_PORT}
+  
+  hermes-frontend:
+    container_name: hermes-frontend
+    build:
+      context: 
+        ./frontend
+    networks:
+      - internal
+      - traefik-proxy
+    labels:
+      - traefik.port=${FRONTEND_PORT}
+      - traefik.http.routers.hermes-frontend.tls=${TLS}
+      - traefik.http.routers.hermes-frontend.rule=Host(`${URL_PREFIX}.hermes-frontend.${URL_POSFIX}`)
+      - traefik.http.routers.hermes-frontend.tls.certresolver=${CERT_RESOLVER}
+      - traefik.http.routers.hermes-frontend.entrypoints=${ENTRYPOINTS}
+      - traefik.http.services.hermes-frontend.loadbalancer.server.port=${FRONTEND_PORT}
+    
+volumes:
+  db_data:

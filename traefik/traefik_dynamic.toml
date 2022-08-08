@@ -1,0 +1,14 @@
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "admin:$apr1$r4eekl0s$QtUpnkxC./0ljxsyvCZpR/"
+  ]
+
+[http.routers.api]
+  rule = "Host(`docker.traefik.localhost`)"
+  entrypoints = ["web"] # localhost
+  # entrypoints = ["websecure"] #production
+
+  middlewares = ["simpleAuth"]
+  service = "api@internal"
+  # [http.routers.api.tls]
+  #   certResolver = "lets-encrypt"

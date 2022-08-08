@@ -161,7 +161,7 @@ function Dashboard() {
 
             // Arrow functions
             const toggle = () => setDropdownOpen((curr) => !curr);
-            const handleSelectedMessenger = () => dispatch(setSelectedMessengerId(String(messenger.id)))
+            // const handleSelectedMessenger = () => dispatch(setSelectedMessengerId(String(messenger.id)))
 
 
             return (
