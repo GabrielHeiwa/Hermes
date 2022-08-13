@@ -57,9 +57,10 @@ services:
       - internal
       - traefik-proxy
     labels:
+      - traefik.enable=true
       - traefik.port=${BACKEND_PORT}
-      - traefik.http.routers.hermes-backend.tls=${TLS}
-      - traefik.http.routers.hermes-backend.entrypoints=${ENTRYPOINTS}
+      # - traefik.http.routers.hermes-backend.tls=${TLS}
+      - traefik.http.routers.hermes-backend.entrypoints=websecure
       - traefik.http.routers.hermes-backend.rule=Host(`${URL_PREFIX}.hermes-backend.${URL_POSFIX}`)
       - traefik.http.routers.hermes-backend.tls.certresolver=${CERT_RESOLVER}
       - traefik.http.services.hermes-backend.loadbalancer.server.port=${BACKEND_PORT}
