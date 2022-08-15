@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
-	BsFillCircleFill,
-	BsFillPersonFill,
-	BsThreeDotsVertical,
-} from 'react-icons/bs'
+  BsFillCircleFill,
+  BsFillPersonFill,
+  BsThreeDotsVertical
+} from 'react-icons/bs';
 import { useDispatch } from 'react-redux';
 import ReactSelect from "react-select";
 import { toast } from "react-toastify";
@@ -29,7 +29,7 @@ import {
   ModalFooter,
   ModalHeader,
   Row,
-  Spinner,
+  Spinner
 } from "reactstrap";
 
 const messengers = [
@@ -43,7 +43,8 @@ const messengers = [
     totalPending: 100,
     running: false,
     days: ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabádo','Domingo'],
-    hours: ['10:00', '18:00']
+    hours: ['10:00', '18:00'],
+    phone: "(47) 9 9999-9999"
   },
   {
     id: 2,
@@ -110,12 +111,12 @@ const numbers = [
   {
     id: 1, 
     phone: '47991907711',
-    name: 'Telefone pessoal'
+    description: 'Telefone pessoal'
   },
   {
     id: 2, 
     phone: '47984288351',
-    name: 'Telefone 2'
+    description: 'Telefone 2'
   }
 ]
 
@@ -176,7 +177,6 @@ function Dashboard() {
             // Arrow functions
             const toggle = () => setDropdownOpen((curr) => !curr);
             // const handleSelectedMessenger = () => dispatch(setSelectedMessengerId(String(messenger.id)))
-
 
             return (
               <Col md={4} key={messenger.id}>
@@ -259,6 +259,12 @@ function Dashboard() {
                         Horário: das {messenger.hours?.join(' às ')}
                       </span>
                     </Row>
+
+                    <Row>
+                      <span>
+                        Número: {messenger.phone}
+                      </span>
+                    </Row>
                   </CardBody>
                 </Card>
               </Col>
@@ -318,6 +324,7 @@ const daysOfWeekOptions = [
 interface NewMessenger {
   name: string;
   message: string;
+  phone: string;
   start: Date;
   end: Date;
   file: File;
@@ -391,6 +398,19 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
               )}
             />
             <FormFeedback>{errors.name?.message}</FormFeedback>
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor='phone'>Telefone</Label>
+            <Controller 
+              name='phone'
+              control={control}
+              rules={{ required: 'Campo não pode ser nulo' }}
+              render={({ field: { onChange }}) => <ReactSelect
+                options={numbers.map(number => ({ label: `${number.description} - ${number.phone}`, value: number.id }))}
+              />
+            }
+            />
           </FormGroup>
 
           <FormGroup>
@@ -506,6 +526,7 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
           </Row>
         </Form>
       </ModalBody>
+      
       <ModalFooter>
         <Button onClick={handleClose} color="link">
           Cancelar
@@ -539,6 +560,10 @@ function NewPhoneNumber({ handleClose }: NewPhoneNumberProps) {
   function handleOnSubmit(data: PhoneNumber) {
     console.log(data);
 
+    numbers.push({
+      id: numbers.length,
+      ...data
+    })
 
   }
 
@@ -609,3 +634,4 @@ function NewPhoneNumber({ handleClose }: NewPhoneNumberProps) {
 }
 
 export { Dashboard };
+
