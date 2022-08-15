@@ -31,7 +31,6 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { setSelectedMessengerId } from '../../redux/reducers/dashboardReducer';
 
 const messengers = [
   {
@@ -43,6 +42,8 @@ const messengers = [
     totalSend: 99,
     totalPending: 100,
     running: false,
+    days: ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabádo','Domingo'],
+    hours: ['10:00', '18:00']
   },
   {
     id: 2,
@@ -105,6 +106,19 @@ const messengers = [
   },
 ];
 
+const numbers = [
+  {
+    id: 1, 
+    phone: '47991907711',
+    name: 'Telefone pessoal'
+  },
+  {
+    id: 2, 
+    phone: '47984288351',
+    name: 'Telefone 2'
+  }
+]
+
 function Dashboard() {
   // States
   const [dropdowmNew, setDropdownNew] = useState(false);
@@ -165,7 +179,7 @@ function Dashboard() {
 
 
             return (
-              <Col md={4} key={messenger.name}>
+              <Col md={4} key={messenger.id}>
                 <Card className="m-1">
                   <CardHeader>
                     <Row>
@@ -216,7 +230,7 @@ function Dashboard() {
                       </Col>
 
                       <Col>
-                        <span className="p-1">
+                        <span>
                           Total: {messenger.totalMessages}
                         </span>
                       </Col>
@@ -224,6 +238,26 @@ function Dashboard() {
                       <Col>
                         <span>Enviadas: {messenger.totalSend}</span>
                       </Col>
+                    </Row>
+
+                    <Row>
+                      <span className='text-truncate'>
+                        Mensagem: {' '}
+                        {messenger.message} 
+                      </span>
+                    </Row>
+
+                    <Row>
+                      <span className='text-truncate'>
+                        Dias: {' '}
+                        {messenger.days?.join(', ')}
+                      </span>
+                    </Row>
+
+                    <Row>
+                      <span>
+                        Horário: das {messenger.hours?.join(' às ')}
+                      </span>
                     </Row>
                   </CardBody>
                 </Card>
@@ -249,7 +283,7 @@ function Header() {
         <BsFillPersonFill />
 
         <Dropdown
-          className="mx-1"
+          className='mx-1'
           isOpen={dropdownUser}
           toggle={toggleUser}
           direction="down"
@@ -490,6 +524,7 @@ interface NewPhoneNumberProps {
 
 interface PhoneNumber {
   phone: string;
+  description: string;
 }
 
 function NewPhoneNumber({ handleClose }: NewPhoneNumberProps) {
@@ -503,27 +538,56 @@ function NewPhoneNumber({ handleClose }: NewPhoneNumberProps) {
   // Functions
   function handleOnSubmit(data: PhoneNumber) {
     console.log(data);
+
+
   }
 
   return (
-    <Modal isOpen={true} size="sm">
+    <Modal isOpen={true}>
       <ModalHeader>Novo número de celular</ModalHeader>
 
       <ModalBody>
         <Form>
           <Row>
-            <Col>
-              <FormGroup>
-                <Label htmlFor="phone">Celular</Label>
-                <Controller
-                  control={control}
-                  name="phone"
-                  render={({ field: { onChange } }) => (
-                    <Input id="phone" name="phone" onChange={onChange} />
-                  )}
-                />
-              </FormGroup>
-            </Col>
+            <FormGroup>
+              <Label htmlFor="phone">Celular</Label>
+              <Controller
+                control={control}
+                name="phone"
+                rules={{ required: 'Campo não pode ser vazio'}}
+                render={({ field: { onChange } }) => (
+                  <Input id="phone" name="phone" invalid={errors.phone ? true : false} onChange={onChange} />
+                )}
+              />
+              {
+                errors.phone ?
+                  <FormFeedback>{errors.phone.message}</FormFeedback> :
+                  <></>
+              }
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Descrição</Label>
+              <Controller 
+                control={control}
+                name="description"
+                rules={{ required: 'Campo não pode ser vazio'}}
+                render={({ field: { onChange }}) => (
+                  <Input 
+                    id={'description'} 
+                    type='textarea'
+                    name="description" 
+                    invalid={errors.description ? true : false} 
+                    onChange={onChange}
+                  />
+                )}
+              />
+              {
+                errors.description ?
+                  <FormFeedback>{errors.description.message}</FormFeedback> :
+                  <></>
+              }
+            </FormGroup>
           </Row>
         </Form>
       </ModalBody>
