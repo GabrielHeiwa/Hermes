@@ -1,6 +1,14 @@
-import { combineReducers } from "@reduxjs/toolkit";
-import dashboardReducer from "./reducers/dashboardReducer";
+import { configureStore } from '@reduxjs/toolkit'
+import dashboardReducer from './reducers/dashboardReducer'
 
-export default combineReducers([
-    dashboardReducer
-])
+const store = configureStore({
+    reducer: {
+        dashboardReducer
+    },
+    devTools: true
+})
+
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
+export default store

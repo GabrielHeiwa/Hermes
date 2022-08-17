@@ -1,21 +1,18 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Dashboard } from '../pages/dashboard'
-import Home from '../pages/Home'
-import Login from "../pages/Login";
-import { useId } from 'react'
+import { useId } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Dashboard from '../pages/dashboard';
+import Home from '../pages/home';
+import Login from '../pages/login';
 
 export default function AppRoutes() {
-
   return (
     <BrowserRouter>
       <Routes>
-        {
-          routesData.map(({ path, element }) => {
-            const id = useId()
-            
-            return <Route key={id} path={path} element={element} />
-          })
-        }
+        {routesData.map(({ path, element }) => {
+          const id = useId();
+
+          return <Route key={id} path={path} element={element} />;
+        })}
       </Routes>
     </BrowserRouter>
   );
@@ -23,15 +20,15 @@ export default function AppRoutes() {
 
 export const routesData = [
   {
-    path: "/",
+    path: '/',
     element: <Home />,
   },
   {
-    path: "/dashboard",
+    path: '/dashboard',
     element: <Dashboard />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <Login />,
   },
 ];
