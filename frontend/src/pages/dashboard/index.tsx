@@ -305,6 +305,14 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
   // Functions
   function handleOnSubmit(data: NewMessenger) {
     console.log(data);
+
+    // messengers.push({
+    //   id: messengers.length,
+    //   days: data.daysOfWeekOptions,
+    //   message: data.message,
+    //   name: data.name,
+    //   totalMessages:
+    // });
   }
 
   function handleOnFileLoaded(e: React.ChangeEvent<HTMLInputElement>) {
@@ -323,6 +331,8 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
         const content = target?.result;
 
         if (!content) return toast.error('Arquivo vazio');
+        const numbers = content.toString().split(/\n|\r/gm)
+        console.log(numbers)        
 
         setTimeout(() => setLoadingFile((curr) => !curr), 3000);
       };
@@ -365,6 +375,7 @@ function AddMessenger({ handleClose }: AddMessengerProps) {
                     label: `${number.description} - ${number.phone}`,
                     value: number.id,
                   }))}
+                  placeholder="Selecione um número"
                   onChange={onChange}
                 />
               )}
