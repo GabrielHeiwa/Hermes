@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import React, { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import {
   BsFillCircleFill,
   BsFillPersonFill,
@@ -31,8 +31,23 @@ import {
   Row,
   Spinner
 } from "reactstrap";
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setSelectedMessengerId } from '../../redux/reducers/dashboardReducer';
 
-const messengers = [
+interface MessengerProps {
+  id: number;
+  name: string;
+  message: string;
+  totalSend: number;
+  totalPending: number;
+  totalMessages: number;
+  running: boolean;
+  days: string[];
+  hours: string[];
+  phone: string;
+}
+
+const messengers: MessengerProps[] = [
   {
     id: 1,
     name: "Lead's 47",
@@ -54,6 +69,9 @@ const messengers = [
     totalMessages: 199,
     totalSend: 99,
     totalPending: 100,
+    days: ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabádo','Domingo'],
+    hours: ['10:00', '18:00'],
+    phone: '(47) 9 9999-9999',
     running: true,
   },
   {
@@ -65,6 +83,9 @@ const messengers = [
     totalSend: 99,
     totalPending: 100,
     running: false,
+    days: [],
+    hours: [],
+    phone: ''
   },
   {
     id: 4,
@@ -74,6 +95,10 @@ const messengers = [
     totalMessages: 199,
     totalSend: 99,
     totalPending: 100,
+    running: false,
+    days: [],
+    hours: [],
+    phone: ''
   },
   {
     id: 5,
@@ -84,6 +109,9 @@ const messengers = [
     totalSend: 99,
     totalPending: 100,
     running: false,
+    days: [],
+    hours: [],
+    phone: ''
   },
   {
     id: 6,
@@ -94,6 +122,9 @@ const messengers = [
     totalSend: 99,
     totalPending: 100,
     running: false,
+    days: [],
+    hours: [],
+    phone: ''
   },
   {
     id: 7,
@@ -104,6 +135,9 @@ const messengers = [
     totalSend: 99,
     totalPending: 100,
     running: false,
+    days: [],
+    hours: [],
+    phone: ''
   },
 ];
 
@@ -169,14 +203,46 @@ function Dashboard() {
         <Row className="m-1">
           {messengers.map((messenger) => {
             // Redux
-            const dispatch = useDispatch()
+            const dispatch = useAppDispatch()
+            // const {  } = useAppSelector((state) => state.dashboardReducer)
 
             // States
             const [dropdownOpen, setDropdownOpen] = useState(false);
 
             // Arrow functions
             const toggle = () => setDropdownOpen((curr) => !curr);
-            // const handleSelectedMessenger = () => dispatch(setSelectedMessengerId(String(messenger.id)))
+            const handleSelectedMessenger = () => dispatch(setSelectedMessengerId(String(messenger.id)))
+            // const handleToggleStopMessengerModal = () => dispatch(setToggleStopMessengerModal())
+            // const handleToggleStartMessengerModal = () => dispatch(setToggleStartMessengerModal())
+
+            // Functions
+            function handleStopMessenger() {
+              handleSelectedMessenger()
+
+              const index = messengers.findIndex(({ id }) => id === messenger.id)
+              const newMessenger: MessengerProps = { ...messenger, running: false }
+
+              messengers[index] = newMessenger
+            }
+
+            function handleStartMessenger() {
+              handleSelectedMessenger()
+
+              const index = messengers.findIndex(({ id }) => id === messenger.id)
+              const newMessenger: MessengerProps = { ...messenger, running: true }
+
+              messengers[index] = newMessenger
+            }
+
+            function handleRemoveMessenger() {
+              handleSelectedMessenger()
+
+            }
+            
+            function handleEditMessenger() {
+              handleSelectedMessenger()
+
+            }
 
             return (
               <Col md={4} key={messenger.id}>
@@ -200,8 +266,8 @@ function Dashboard() {
                           </DropdownToggle>
                           <DropdownMenu flip={false}>
                             <DropdownItem header>Opções</DropdownItem>
-                            <DropdownItem>Parar</DropdownItem>
-                            <DropdownItem>Iniciar</DropdownItem>
+                            <DropdownItem onClick={handleStopMessenger}>Parar</DropdownItem>
+                            <DropdownItem onClick={handleStartMessenger}>Iniciar</DropdownItem>
                             <DropdownItem>Remover</DropdownItem>
                             <DropdownItem>Editar</DropdownItem>
                           </DropdownMenu>
@@ -634,4 +700,3 @@ function NewPhoneNumber({ handleClose }: NewPhoneNumberProps) {
 }
 
 export { Dashboard };
-

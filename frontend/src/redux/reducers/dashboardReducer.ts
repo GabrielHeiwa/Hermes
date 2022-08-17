@@ -1,10 +1,16 @@
-import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const messengerSlice = createSlice({
-    name: 'messengerSlice',
-    initialState: {
-        messengerIdSelected: ''
-    },
+interface InitialState {
+	messengerIdSelected: string
+}
+
+const initialState: InitialState = {
+    messengerIdSelected: ''
+}
+
+const dashboardSlice = createSlice({
+    name: 'dashboardSlice',
+    initialState,
     reducers: {
         setSelectedMessengerId: (state, action: PayloadAction<string>) => {
             state.messengerIdSelected = action.payload
@@ -12,6 +18,6 @@ const messengerSlice = createSlice({
     }
 })
 
-export const { setSelectedMessengerId } =  messengerSlice.actions
+export const { setSelectedMessengerId } =  dashboardSlice.actions
 
-export default messengerSlice.reducer
+export default dashboardSlice.reducer
