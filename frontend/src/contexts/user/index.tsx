@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { GET_USER_DATA } from "../../services/graphql/queries/user";
+// import { GET_USER_DATA } from "../../services/graphql/queries/user";
 
 interface userProps {
   id: string;
@@ -24,7 +24,7 @@ export function UserProvider({ children }: userProviderProps) {
   const [user, setUser] = useState<userProps>();
 
   // GraphQL
-  const { data } = useQuery<{ users: userProps[] }>(GET_USER_DATA);
+  // const { data } = useQuery<{ users: userProps[] }>(GET_USER_DATA);
 
   // Functions
   function isAuthenticated() {
@@ -34,11 +34,11 @@ export function UserProvider({ children }: userProviderProps) {
   }
 
   // useEffect
-  useEffect(() => {
-    if (data) {
-      setUser(data.users[0])
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setUser(data.users[0])
+  //   }
+  // }, [data]);
 
   return (
     <userContext.Provider value={{ user, isAuthenticated }}>

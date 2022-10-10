@@ -1,18 +1,13 @@
-import {
-  Button,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-} from "reactstrap";
-import { Controller, useForm } from "react-hook-form";
+import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { loginRequest } from '../../requests/loginRequest';
 
 // TODO: Login user function
 
 interface LoginFormProps {
-  username: string;
-  password: string;
+  email?: string;
+  password?: string;
 }
 
 function Login() {
@@ -24,36 +19,47 @@ function Login() {
   } = useForm<LoginFormProps>();
 
   // Functions
-  function handleOnSubmit(data: LoginFormProps) {
-    console.log(data);
+  async function handleOnSubmit(data: LoginFormProps) {
+    if (Object.values(data).includes(undefined)) return toast.error('Preecha todos os campos corretamente');
+
+    const loginData = {
+      email: data.email ?? '',
+      password: data.password ?? '',
+    };
+
+    try {
+      await loginRequest(loginData);
+      toast.success('Login feito com sucesso');
+    } catch (err: any) {
+      console.error(err);
+      const errorMessage = err.response.data.message || 'Erro ao tentar fazer o login';
+      toast.error(errorMessage);
+    }
 
     return;
   }
 
   return (
-    <div
-      style={{ height: "100vh" }}
-      className="w-100 d-flex align-items-center justify-content-center"
-    >
+    <div style={{ height: '100vh' }} className="w-100 d-flex align-items-center justify-content-center">
       <div className="w-25">
         <Form onSubmit={handleSubmit(handleOnSubmit)}>
           <FormGroup>
-            <Label htmlFor="username">Usuário</Label>
+            <Label htmlFor="username">E-mail</Label>
             <Controller
               control={control}
-              name="username"
-              rules={{ required: "Por favor preencha este campo" }}
+              name="email"
+              rules={{ required: 'Por favor preencha este campo' }}
               render={({ field: { onChange } }) => (
                 <Input
-                  invalid={errors.username ? true : false}
+                  invalid={errors.email ? true : false}
                   onChange={onChange}
                   type="text"
-                  id="username"
-                  name="username"
+                  id="email"
+                  name="email"
                 />
               )}
             />
-            <FormFeedback>{errors.username?.message}</FormFeedback>
+            <FormFeedback>{errors.email?.message}</FormFeedback>
           </FormGroup>
 
           <FormGroup>
@@ -61,7 +67,7 @@ function Login() {
             <Controller
               control={control}
               name="password"
-              rules={{ required: "Por favor preencha este campo" }}
+              rules={{ required: 'Por favor preencha este campo' }}
               render={({ field: { onChange } }) => (
                 <Input
                   invalid={errors.password ? true : false}

@@ -39,17 +39,31 @@ services:
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+      HASURA_GRAPHQL_AUTH_HOOK: http://hermes-token-server:3001/validate-token
     networks:
       - internal
       - traefik-proxy
+    ports:
+      - "8080:8080"
     labels:
-      - traefik.port=8080
-      - traefik.http.routers.hermes-hasura.tls=${TLS}
+      # - traefik.http.routers.hermes-hasura.tls=${TLS}
+      # - traefik.http.routers.hermes-hasura.tls.certresolver=${CERT_RESOLVER}
       - traefik.http.routers.hermes-hasura.entrypoints=${ENTRYPOINTS}
       - traefik.http.routers.hermes-hasura.rule=Host(`${URL_PREFIX}.hermes-hasura.${URL_POSFIX}`)
-      - traefik.http.routers.hermes-hasura.tls.certresolver=${CERT_RESOLVER}
       - traefik.http.services.hermes-hasura.loadbalancer.server.port=8080
     
+  hermes-token-server:
+    container_name: hermes-token-server
+    build: 
+      context: ./tokenServer
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    networks:
+      - internal
+      - traefik-proxy
+
   # hermes-backend:
   #   container_name: hermes-backend
   #   build: 
@@ -59,8 +73,6 @@ services:
   #     - internal
   #     - traefik-proxy
   #   labels:
-  #     - traefik.enable=true
-  #     - traefik.port=${BACKEND_PORT}
   #     # - traefik.http.routers.hermes-backend.tls=${TLS}
   #     - traefik.http.routers.hermes-backend.entrypoints=websecure
   #     - traefik.http.routers.hermes-backend.rule=Host(`${URL_PREFIX}.hermes-backend.${URL_POSFIX}`)
@@ -76,10 +88,9 @@ services:
       - internal
       - traefik-proxy
     labels:
-      - traefik.port=${FRONTEND_PORT}
-      - traefik.http.routers.hermes-frontend.tls=${TLS}
+      # - traefik.http.routers.hermes-frontend.tls=${TLS}
+      # - traefik.http.routers.hermes-frontend.tls.certresolver=${CERT_RESOLVER}
       - traefik.http.routers.hermes-frontend.rule=Host(`${URL_PREFIX}.hermes-frontend.${URL_POSFIX}`)
-      - traefik.http.routers.hermes-frontend.tls.certresolver=${CERT_RESOLVER}
       - traefik.http.routers.hermes-frontend.entrypoints=${ENTRYPOINTS}
       - traefik.http.services.hermes-frontend.loadbalancer.server.port=${FRONTEND_PORT}
     

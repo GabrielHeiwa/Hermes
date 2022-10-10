@@ -1,4 +1,6 @@
+import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import {
   Button,
   Form,
@@ -12,7 +14,9 @@ import {
   ModalHeader,
   Row,
 } from 'reactstrap';
-import { numbers } from '../..';
+// import { numbers } from '../..';
+import { socket } from '../../../../services/io';
+import QrCode from 'qrcode';
 
 interface PhoneNumber {
   phone: string;
@@ -24,6 +28,13 @@ interface NewPhoneNumberProps {
 }
 
 function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
+ 
+  // States
+  const [show, setShow] = useState(false);
+
+  // Refs
+  const refCanvas = useRef<HTMLCanvasElement | null>(null);
+
   // Hooks
   const {
     control,
@@ -33,11 +44,16 @@ function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
 
   // Functions
   function handleOnSubmit(data: PhoneNumber) {
-    console.log(data);
+    socket.emit('new-phone-number', { ...data });
 
-    numbers.push({
-      id: numbers.length,
-      ...data,
+    socket.on('new-phone-number-status', (data) => {
+      data ? toast.success('Número adicionado com sucesso') : toast.error('Erro ao adicionar o número');
+      handleCloseModal();
+    });
+
+    socket.on('qrcode', (qr) => {
+      setShow(true);
+      QrCode.toCanvas(refCanvas.current, qr, {});
     });
   }
 
@@ -82,6 +98,10 @@ function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
           </Row>
         </Form>
       </ModalBody>
+
+      <div className="d-flex align-items-center justify-content-center">
+        <canvas ref={refCanvas} className={`${show ? 'd-block' : 'd-none'}`}></canvas>
+      </div>
 
       <ModalFooter>
         <Button color="link" onClick={handleCloseModal} type="button">
