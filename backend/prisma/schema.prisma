@@ -23,6 +23,7 @@ model Phone {
   id          String  @id @default(uuid())
   phoneNumber String
   description String?
+  session     String
   userId      String
   user        User    @relation(fields: [userId], references: [id])
 

@@ -38,9 +38,11 @@ io.on("connection", (socket) => {
 
     client.on("qr", (qr) => io.to(socket.id).emit("qrcode", qr));
 
-    client.on("authenticated", () => {
+    client.on("authenticated", (session) => {
       try {
-        const phone = new Phone(payload);
+        if (!session) throw new Error("Arquivo de sessão indefinido");
+
+        const phone = new Phone({ ...payload, session });
         phone.save();
         io.to(socket.id).emit("new-phone-number-status", true);
       } catch (err: any) {
