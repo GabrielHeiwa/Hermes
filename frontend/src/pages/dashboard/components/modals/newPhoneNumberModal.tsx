@@ -14,7 +14,6 @@ import {
   ModalHeader,
   Row,
 } from 'reactstrap';
-// import { numbers } from '../..';
 import { socket } from '../../../../services/io';
 import QrCode from 'qrcode';
 
@@ -28,7 +27,6 @@ interface NewPhoneNumberProps {
 }
 
 function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
- 
   // States
   const [show, setShow] = useState(false);
 
@@ -44,7 +42,11 @@ function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
 
   // Functions
   function handleOnSubmit(data: PhoneNumber) {
-    socket.emit('new-phone-number', { ...data });
+    socket.emit('new-phone-number', {
+      description: data.description,
+      phoneNumber: data.phone,
+      userId: 'bbaa43ea-3d34-42c5-b630-48272c9c3129',
+    });
 
     socket.on('new-phone-number-status', (data) => {
       data ? toast.success('Número adicionado com sucesso') : toast.error('Erro ao adicionar o número');
