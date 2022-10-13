@@ -11,21 +11,76 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  password String
-  Phone    Phone[]
+  id            String          @id @default(uuid())
+  email         String          @unique
+  password      String
+  Phone         Phone[]
+  MessagesGroup MessagesGroup[]
 
   @@map("users")
 }
 
 model Phone {
-  id          String  @id @default(uuid())
-  phoneNumber String
-  description String?
-  session     String
-  userId      String
-  user        User    @relation(fields: [userId], references: [id])
+  id           String      @id @default(uuid())
+  phone_number String
+  description  String?
+  session      String
+  user_id_fk   String
+  user         User        @relation(fields: [user_id_fk], references: [id])
+  Messenger    Messenger[]
 
   @@map("phone_numbers")
+}
+
+model MessagesGroup {
+  id         String      @id @default(uuid())
+  title      String
+  user_id_fk String
+  user       User        @relation(fields: [user_id_fk], references: [id])
+  messages   Message[]
+  messengers Messenger[]
+
+  @@map("messages_groups")
+}
+
+model Message {
+  id                String        @id @default(uuid())
+  message           String
+  message_group     MessagesGroup @relation(fields: [messages_group_id], references: [id])
+  messages_group_id String
+
+  @@map("messages")
+}
+
+model PhoneNumbersGroup {
+  id              String    @id @default(uuid())
+  messenger_id_fk String
+  messenger       Messenger @relation(fields: [messenger_id_fk], references: [id])
+  phone_numbers   Phones[]
+
+  @@map("phone_numbers_group")
+}
+
+model Phones {
+  id                    String            @id @default(uuid())
+  phone_number          String
+  phone_numbers_group   PhoneNumbersGroup @relation(fields: [phone_number_group_id], references: [id])
+  phone_number_group_id String
+
+  @@map("phones")
+}
+
+model Messenger {
+  id                  String              @id @default(uuid())
+  title               String
+  hour_start          DateTime
+  hour_end            DateTime
+  days_running        String
+  phone_id_fk         String
+  phone               Phone               @relation(fields: [phone_id_fk], references: [id])
+  message_group_id_fk String
+  message_group       MessagesGroup       @relation(fields: [message_group_id_fk], references: [id])
+  phone_numbers_group PhoneNumbersGroup[]
+
+  @@map("messengers")
 }

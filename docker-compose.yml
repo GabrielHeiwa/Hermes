@@ -55,7 +55,7 @@ services:
   hermes-token-server:
     container_name: hermes-token-server
     build: 
-      context: ./tokenServer
+      context: ./token-server
     ports:
       - "3001:3001"
     environment:
