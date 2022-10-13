@@ -44,10 +44,10 @@ model MessagesGroup {
 }
 
 model Message {
-  id                String        @id @default(uuid())
-  message           String
-  message_group     MessagesGroup @relation(fields: [messages_group_id], references: [id])
-  messages_group_id String
+  id                   String        @id @default(uuid())
+  message              String
+  message_group        MessagesGroup @relation(fields: [messages_group_id_fk], references: [id])
+  messages_group_id_fk String
 
   @@map("messages")
 }
