@@ -11,7 +11,7 @@ import {
   setVisibleStopMessengerModal,
 } from '../../redux/reducers/dashboardReducer';
 import MessengerCard from './components/messenger';
-import { AddMessageGroupModal } from './components/modals/addMessageGroupModal';
+import { AddMessageGroupModal } from './components/modals/addMessagesGroupModal';
 import AddMessengerModal from './components/modals/addMessengerModal';
 import EditMessengerModal from './components/modals/editMessengerModal';
 import NewPhoneNumberModal from './components/modals/newPhoneNumberModal';

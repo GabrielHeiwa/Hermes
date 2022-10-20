@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../../database/connection";
+import { generateTokensJwt } from "../../utils/jwt";
 import { encryptPassword, compareBcryptPasswords, encryptPasswordBcrypt } from "../../utils/token";
 
 class UserController {
@@ -16,7 +17,12 @@ class UserController {
 
       if (!user) return res.status(401).json({ message: "Usuário não autenticado" });
 
-      return res.status(200).json({ message: "Usuário logado com sucesso" });
+      const token = generateTokensJwt({
+        "X-Hasura-User-Id": user.id,
+        "X-Hasura-Role": "admin"
+      })
+
+      return res.status(200).json({ message: "Usuário logado com sucesso", token });
     } catch (error) {
       console.log({ error });
       return res.status(400).json({ message: "Erro ao realizar o login do usuário", error });
@@ -69,6 +75,8 @@ class UserController {
         password: encryptPasswordBcrypt(data.password),
         email: data.email,
       };
+
+     
 
       await prisma.user.create({ data: user });
 

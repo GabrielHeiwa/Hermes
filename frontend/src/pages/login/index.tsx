@@ -2,6 +2,8 @@ import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { loginRequest } from '../../requests/loginRequest';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 // TODO: Login user function
 
@@ -17,6 +19,8 @@ function Login() {
     control,
     formState: { errors },
   } = useForm<LoginFormProps>();
+  const [, setCookie] = useCookies(['accessToken', 'refreshToken']);
+  const navigate = useNavigate();
 
   // Functions
   async function handleOnSubmit(data: LoginFormProps) {
@@ -28,7 +32,11 @@ function Login() {
     };
 
     try {
-      await loginRequest(loginData);
+      const response = await loginRequest(loginData);
+      setCookie('accessToken', response.data.token.refreshToken);
+      setCookie('refreshToken', response.data.token.accessToken);
+      navigate('/dashboard');
+
       toast.success('Login feito com sucesso');
     } catch (err: any) {
       console.error(err);
@@ -50,13 +58,7 @@ function Login() {
               name="email"
               rules={{ required: 'Por favor preencha este campo' }}
               render={({ field: { onChange } }) => (
-                <Input
-                  invalid={errors.email ? true : false}
-                  onChange={onChange}
-                  type="text"
-                  id="email"
-                  name="email"
-                />
+                <Input invalid={errors.email ? true : false} onChange={onChange} type="text" id="email" name="email" />
               )}
             />
             <FormFeedback>{errors.email?.message}</FormFeedback>
