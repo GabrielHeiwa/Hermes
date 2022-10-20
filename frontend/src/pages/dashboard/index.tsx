@@ -5,11 +5,13 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   setSelectedMessengerId,
   setVisibleEditMessengerModal,
+  setVisibleMessageGroupModal,
   setVisibleRemoveMessengerModal,
   setVisibleStartMessengerModal,
   setVisibleStopMessengerModal,
 } from '../../redux/reducers/dashboardReducer';
 import MessengerCard from './components/messenger';
+import { AddMessageGroupModal } from './components/modals/addMessageGroupModal';
 import AddMessengerModal from './components/modals/addMessengerModal';
 import EditMessengerModal from './components/modals/editMessengerModal';
 import NewPhoneNumberModal from './components/modals/newPhoneNumberModal';
@@ -53,6 +55,7 @@ function Dashboard() {
     visibleStopMessengerModal,
     visibleStartMessengerModal,
     visibleRemoveMessengerModal,
+    visibleAddMessageGroupModal
   } = useAppSelector((state) => state.dashboardReducer);
 
   // States
@@ -75,6 +78,9 @@ function Dashboard() {
 
   const handleOpenRemoveMessenger = () => dispatch(setVisibleRemoveMessengerModal(true));
   const handleCloseRemoveMessenger = () => dispatch(setVisibleRemoveMessengerModal(false));
+  
+  const handleOpenAddMessageGroupModal = () => dispatch(setVisibleMessageGroupModal(true));
+  const handleCloseAddMessageGroupModal = () => dispatch(setVisibleMessageGroupModal(false));
 
   // Functions
   function handleStopMessenger(id: number) {
@@ -101,6 +107,7 @@ function Dashboard() {
     <div style={{ height: '100vh', width: '100vw' }}>
       <Header />
 
+      {visibleAddMessageGroupModal && <AddMessageGroupModal handleCloseModal={handleCloseAddMessageGroupModal} />}
       {openAddMessengerModal && <AddMessengerModal handleCloseModal={handleOpenAddMessengerModal} />}
       {openNewPhoneNumberModal && <NewPhoneNumberModal handleCloseModal={handleOpenNewPhoneNumberModal} />}
       {visibleEditMessengerModal && <EditMessengerModal />}
@@ -124,6 +131,7 @@ function Dashboard() {
               <DropdownMenu className="mx-1">
                 <DropdownItem header>Opções</DropdownItem>
                 <DropdownItem onClick={handleOpenNewPhoneNumberModal}>Número</DropdownItem>
+                <DropdownItem onClick={handleOpenAddMessageGroupModal}>Conjunto de mensagens</DropdownItem>
                 <DropdownItem onClick={handleOpenAddMessengerModal}>Mensageiro</DropdownItem>
               </DropdownMenu>
             </Dropdown>

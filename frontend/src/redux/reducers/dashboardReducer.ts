@@ -110,6 +110,7 @@ interface InitialState {
   visibleStopMessengerModal: boolean;
   visibleStartMessengerModal: boolean;
   visibleRemoveMessengerModal: boolean;
+  visibleAddMessageGroupModal: boolean;
 }
 
 const initialState: InitialState = {
@@ -119,6 +120,7 @@ const initialState: InitialState = {
   visibleStopMessengerModal: false,
   visibleEditMessengerModal: false,
   visibleRemoveMessengerModal: false,
+  visibleAddMessageGroupModal: false,
 };
 
 const dashboardSlice = createSlice({
@@ -148,6 +150,10 @@ const dashboardSlice = createSlice({
     setVisibleRemoveMessengerModal: (state, action: PayloadAction<boolean>) => {
       state.visibleRemoveMessengerModal = action.payload;
     },
+
+    setVisibleMessageGroupModal: (state, action: PayloadAction<boolean>) => {
+      state.visibleAddMessageGroupModal = action.payload;
+    },
   },
 });
 
@@ -158,6 +164,7 @@ export const {
   setVisibleRemoveMessengerModal,
   setVisibleStartMessengerModal,
   setVisibleStopMessengerModal,
+  setVisibleMessageGroupModal,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
