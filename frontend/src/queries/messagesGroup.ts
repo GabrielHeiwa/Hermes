@@ -19,3 +19,28 @@ export const INSERT_MESSAGES_GROUP = gql`
     }
   }
 `;
+
+export interface GetMessagesGroupVariables {
+  userId: string;
+}
+
+export interface GetMessagesGroupData {
+  messages_groups: {
+    id: string;
+    title: string;
+    messages: { id: string; message: string }[];
+  }[];
+}
+
+export const GET_MESSAGES_GROUP = gql`
+  query getMessagesGroupByUserId($userId: String!) {
+    messages_groups(where: { user_id_fk: { _eq: $userId } }) {
+      id
+      title
+      messages {
+        id
+        message
+      }
+    }
+  }
+`;

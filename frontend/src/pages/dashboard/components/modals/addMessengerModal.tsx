@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import ReactSelect from 'react-select';
@@ -19,6 +20,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import { numbers } from '../..';
+import { GetMessagesGroupData, GetMessagesGroupVariables, GET_MESSAGES_GROUP } from '../../../../queries/messagesGroup';
 
 export interface NewMessenger {
   name: string;
@@ -55,6 +57,12 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
 
   // States
   const [loadingFile, setLoadingFile] = useState(false);
+
+  // GraphQL
+  const { data } = useQuery<GetMessagesGroupData, GetMessagesGroupVariables>(GET_MESSAGES_GROUP, {
+    variables: { userId: 'b245ea36-6e7e-4352-a7a4-fbd23424602a' },
+  });
+  const messagesGroupOptions = data?.messages_groups.map((mg) => ({ label: mg.title, value: mg.id }));
 
   // Functions
   function handleOnSubmit(data: NewMessenger) {
@@ -137,19 +145,24 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="message">Mensagem</Label>
+            <Label htmlFor="message">Conjunto de mensagem</Label>
             <Controller
               name="message"
               rules={{ required: 'Campo não pode estar vazio' }}
               control={control}
               render={({ field: { onChange } }) => (
-                <Input
-                  name="message"
-                  type="textarea"
-                  id="message"
+                <ReactSelect
+                  options={messagesGroupOptions}
+                  placeholder="Selecione um conjunto de mensagens"
                   onChange={onChange}
-                  invalid={errors.message ? true : false}
                 />
+                // <Input
+                //   name="message"
+                //   type="textarea"
+                //   id="message"
+                //   onChange={onChange}
+                //   invalid={errors.message ? true : false}
+                // />
               )}
             />
             <FormFeedback>{errors.message?.message}</FormFeedback>

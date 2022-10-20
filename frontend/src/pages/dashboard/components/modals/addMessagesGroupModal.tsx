@@ -71,7 +71,7 @@ function AddMessageGroupModal(props: AddMessageGroupModalProps) {
       const messagesGroup = {
         id: v4(),
         title: messagesGroupTitle,
-        user_id_fk: '2102b582-e760-4f4a-9310-cc338c81238d',
+        user_id_fk: 'b245ea36-6e7e-4352-a7a4-fbd23424602a',
         messages: { data: messages.filter((m) => m).map((m) => ({ id: v4(), message: m })) },
       };
 
