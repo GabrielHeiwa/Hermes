@@ -7,7 +7,7 @@ export interface PhoneProps {
   phoneNumber: string;
   description?: string;
   userId: string;
-  session: ClientSession;
+  session: string;
 }
 
 class Phone {
@@ -15,7 +15,7 @@ class Phone {
   private phoneNumber: string;
   private description?: string | undefined;
   private userId: string;
-  private session: ClientSession;
+  private session: string;
 
   constructor(props: PhoneProps) {
     if (!props.id) this.id = randomUUID();
@@ -29,11 +29,11 @@ class Phone {
     try {
       await prisma.phone.create({
         data: {
-          phoneNumber: this.getPhoneNumber(),
+          phone_number: this.getPhoneNumber(),
           description: this.getDescription(),
-          userId: this.getUserId(),
-          session: JSON.stringify(this.getSession()),
-        },
+          user_id_fk: this.getUserId(),
+          session: this.getSession(),
+        }
       });
 
       return {
@@ -41,6 +41,8 @@ class Phone {
         status: 201,
       };
     } catch (err: any) {
+      console.log(err);
+      
       return {
         message: "Erro ao adicionar o número de telefone no banco de dados",
         status: 400,
@@ -69,7 +71,7 @@ class Phone {
     return this.session;
   }
 
-  setSession(_session: ClientSession) {
+  setSession(_session: string) {
     this.session = _session;
 
     return;

@@ -2,10 +2,11 @@ import express from "express";
 import http from "http";
 import { router } from "./routes";
 import { Server } from "socket.io";
-import { Client } from "whatsapp-web.js";
+import { Client, LegacySessionAuth, LocalAuth, NoAuth } from "whatsapp-web.js";
 import morgan from "morgan";
 import cors from "cors";
 import { Phone, PhoneProps } from "./entities/phone";
+import { randomUUID } from "crypto";
 
 const app = express();
 const server = http.createServer(app);
@@ -27,10 +28,14 @@ io.on("connection", (socket) => {
   );
 
   socket.on("new-phone-number", (payload: PhoneProps) => {
-    const client = new Client({ puppeteer: { headless: false } });
+    const client = new Client({ 
+      puppeteer: { headless: false }, 
+      authStrategy: new LocalAuth({ clientId: socket.id }) 
+    });
 
-    client.initialize().catch((_) => {
+    client.initialize().catch((err) => {
       client.destroy();
+
       io.to(socket.id).emit("new-phone-number-status", false);
 
       return;
@@ -38,14 +43,14 @@ io.on("connection", (socket) => {
 
     client.on("qr", (qr) => io.to(socket.id).emit("qrcode", qr));
 
-    client.on("authenticated", (session) => {
+    client.on("authenticated", () => {
       try {
-        if (!session) throw new Error("Arquivo de sessão indefinido");
-
-        const phone = new Phone({ ...payload, session });
+        const phone = new Phone({ ...payload, session: randomUUID() });
         phone.save();
+        
         io.to(socket.id).emit("new-phone-number-status", true);
       } catch (err: any) {
+        console.log(err);
         io.to(socket.id).emit("new-phone-number-status", false);
       }
     });
