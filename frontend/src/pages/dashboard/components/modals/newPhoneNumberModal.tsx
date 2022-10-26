@@ -45,7 +45,7 @@ function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
     socket.emit('new-phone-number', {
       description: data.description,
       phoneNumber: data.phone,
-      userId: 'bbaa43ea-3d34-42c5-b630-48272c9c3129',
+      userId: 'b245ea36-6e7e-4352-a7a4-fbd23424602a',
     });
 
     socket.on('new-phone-number-status', (data) => {

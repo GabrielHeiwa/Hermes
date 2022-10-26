@@ -21,6 +21,11 @@ import {
 } from 'reactstrap';
 import { numbers } from '../..';
 import { GetMessagesGroupData, GetMessagesGroupVariables, GET_MESSAGES_GROUP } from '../../../../queries/messagesGroup';
+import {
+  GetPhonesNumbersByUserIdData,
+  GetPhonesNumbersByUserIdVariables,
+  GET_PHONES_NUMBERS_BY_USER_ID,
+} from '../../../../queries/phonesNumbers';
 
 export interface NewMessenger {
   name: string;
@@ -63,6 +68,19 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
     variables: { userId: 'b245ea36-6e7e-4352-a7a4-fbd23424602a' },
   });
   const messagesGroupOptions = data?.messages_groups.map((mg) => ({ label: mg.title, value: mg.id }));
+
+  const { data: phonesNumbersData } = useQuery<GetPhonesNumbersByUserIdData, GetPhonesNumbersByUserIdVariables>(
+    GET_PHONES_NUMBERS_BY_USER_ID,
+    {
+      variables: {
+        userId: 'b245ea36-6e7e-4352-a7a4-fbd23424602a',
+      },
+    },
+  );
+  const phonesNumbersOptions = phonesNumbersData?.phone_numbers.map((phone_number) => ({
+    label: `${phone_number.description} - ${phone_number.phone_number}`,
+    value: phone_number.id,
+  }));
 
   // Functions
   function handleOnSubmit(data: NewMessenger) {
@@ -132,14 +150,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
               control={control}
               rules={{ required: 'Campo não pode ser nulo' }}
               render={({ field: { onChange } }) => (
-                <ReactSelect
-                  options={numbers.map((number) => ({
-                    label: `${number.description} - ${number.phone}`,
-                    value: number.id,
-                  }))}
-                  placeholder="Selecione um número"
-                  onChange={onChange}
-                />
+                <ReactSelect options={phonesNumbersOptions} placeholder="Selecione um número" onChange={onChange} />
               )}
             />
           </FormGroup>
