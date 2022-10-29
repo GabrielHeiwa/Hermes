@@ -12,6 +12,12 @@ interface LoginFormProps {
   password?: string;
 }
 
+interface LoginDataRequest {
+  message: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
 function Login() {
   // Hooks
   const {
@@ -19,7 +25,7 @@ function Login() {
     control,
     formState: { errors },
   } = useForm<LoginFormProps>();
-  const [, setCookie] = useCookies(['accessToken', 'refreshToken']);
+  const [, setCookie] = useCookies(['@hermes/accessToken', '@hermes/refreshToken']);
   const navigate = useNavigate();
 
   // Functions
@@ -32,15 +38,14 @@ function Login() {
     };
 
     try {
-      const response = await loginRequest(loginData);
-      setCookie('accessToken', response.data.token.refreshToken);
-      setCookie('refreshToken', response.data.token.accessToken);
+      const { accessToken, message, refreshToken } = await loginRequest<LoginDataRequest>(loginData);
+      setCookie('@hermes/accessToken', accessToken);
+      setCookie('@hermes/refreshToken', refreshToken);
+      toast.success(message);
       navigate('/dashboard');
-
-      toast.success('Login feito com sucesso');
     } catch (err: any) {
       console.error(err);
-      const errorMessage = err.response.data.message || 'Erro ao tentar fazer o login';
+      const errorMessage = err.message || err.response?.data.message || 'Erro ao tentar fazer o login';
       toast.error(errorMessage);
     }
 

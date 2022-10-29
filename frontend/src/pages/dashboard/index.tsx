@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row } from 'reactstrap';
+import { useAuthenticated } from '../../hooks/authenticated';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import {
   setSelectedMessengerId,
@@ -159,6 +160,9 @@ function Header() {
   // States
   const [dropdownUser, setDropdownUser] = useState(false);
 
+  // Hooks
+  const { logout } = useAuthenticated();
+
   // Arrow functions
   const toggleUser = () => setDropdownUser((curr) => !curr);
 
@@ -173,7 +177,7 @@ function Header() {
           </DropdownToggle>
 
           <DropdownMenu>
-            <DropdownItem>Sair</DropdownItem>
+            <DropdownItem onClick={logout}>Sair</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Col>

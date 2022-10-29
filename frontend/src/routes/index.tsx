@@ -1,29 +1,19 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import type { RouteObject } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom';
 import Dashboard from '../pages/dashboard';
 import Home from '../pages/home';
 import Login from '../pages/login';
-
-const routes: RouteObject[] = [
-  {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/dashboard',
-    element: <Dashboard />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-];
-
-const router = createBrowserRouter(routes);
+import { useAuthenticated } from '../hooks/authenticated';
 
 function AppRoutes() {
-  return <RouterProvider router={router} />;
+  const { isAuthenticated } = useAuthenticated();
+
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} hasErrorBoundary />
+      <Route path="/home" element={<Home />} hasErrorBoundary />
+      {isAuthenticated ? <Route path="/dashboard" element={<Dashboard />} hasErrorBoundary /> : <></>}
+    </Routes>
+  );
 }
 
-export { routes };
 export default AppRoutes;

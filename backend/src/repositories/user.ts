@@ -1,6 +1,5 @@
-
 import { prisma } from "../database/connection";
-import { User } from "../entities/user";
+// import { User } from "../entities/user";
 
 class UserRepository {
 	constructor() {}
@@ -23,8 +22,6 @@ class UserRepository {
 			};
 		}
 	}
-
-    
 }
 
 export { UserRepository };

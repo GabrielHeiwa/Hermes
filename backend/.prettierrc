@@ -1,6 +1,4 @@
 {
   "useTabs": true,
-  "tabWidth": 4,
-  "rangeEnd": 100,
-  "rangeStart": 0
+  "tabWidth": 8
 }
