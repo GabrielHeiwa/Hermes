@@ -13,7 +13,7 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+	app.use(morgan("dev"));
 }
 
 app.use(express.json());
@@ -21,44 +21,62 @@ app.use(cors());
 app.use(router);
 
 io.on("connection", (socket) => {
-  console.log(`Socket: ${socket.id} has been connected!`);
+	console.log(`Socket: ${socket.id} has been connected!`);
 
-  socket.on("disconnect", (reason) =>
-    console.log(`Socket: ${socket.id} has been disconnected by ${reason}`)
-  );
+	socket.on("disconnect", (reason) =>
+		console.log(
+			`Socket: ${socket.id} has been disconnected by ${reason}`
+		)
+	);
 
-  socket.on("new-phone-number", (payload: PhoneProps) => {
-    const client = new Client({ 
-      puppeteer: { headless: false }, 
-      authStrategy: new LocalAuth({ clientId: socket.id }) 
-    });
+	socket.on("new-phone-number", (payload: PhoneProps) => {
+		const client = new Client({
+			puppeteer: { headless: false },
+			authStrategy: new LocalAuth({ clientId: socket.id }),
+		});
 
-    client.initialize().catch((err) => {
-      client.destroy();
+		client.initialize().catch((err) => {
+			console.log(err);
 
-      io.to(socket.id).emit("new-phone-number-status", false);
+			client.destroy();
 
-      return;
-    });
+			io.to(socket.id).emit("new-phone-number-status", false);
 
-    client.on("qr", (qr) => io.to(socket.id).emit("qrcode", qr));
+			return;
+		});
 
-    client.on("authenticated", () => {
-      try {
-        const phone = new Phone({ ...payload, session: randomUUID() });
-        phone.save();
-        
-        io.to(socket.id).emit("new-phone-number-status", true);
-      } catch (err: any) {
-        console.log(err);
-        io.to(socket.id).emit("new-phone-number-status", false);
-      }
-    });
+		client.on("qr", (qr) => io.to(socket.id).emit("qrcode", qr));
 
-    client.on("auth_failure", () => io.to(socket.id).emit("new-phone-number-status", false));
+		client.on("authenticated", () => {
+			try {
+				const _phone = {
+					...payload,
+					session: randomUUID(),
+				};
+				console.log({ _phone });
 
-    return;
-  });
+				const phone = new Phone(_phone);
+				phone.save();
+
+				io.to(socket.id).emit(
+					"new-phone-number-status",
+					true
+				);
+			} catch (err: any) {
+				console.log(err);
+				io.to(socket.id).emit(
+					"new-phone-number-status",
+					false
+				);
+			}
+		});
+
+		client.on("auth_failure", () =>
+			io.to(socket.id).emit("new-phone-number-status", false)
+		);
+
+		return;
+	});
 });
 
 export { server, io };

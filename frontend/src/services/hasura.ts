@@ -6,9 +6,8 @@ function createApolloClient(token: string) {
   const httpLink = new HttpLink({
     uri: import.meta.env.VITE_APP_HASURA_HTTP_URL,
     headers: {
-      authorization: 'Bearer ' + token,
-      // "x-hasura-admin-secret": import.meta.env
-      // 	.VITE_APP_HASURA_ADMIN_SECRET,
+      // authorization: 'Bearer ' + token,
+      'x-hasura-admin-secret': import.meta.env.VITE_APP_HASURA_ADMIN_SECRET,
     },
   });
 
@@ -18,9 +17,8 @@ function createApolloClient(token: string) {
       reconnect: true,
       connectionParams: {
         headers: {
-          authorization: 'Bearer ' + token,
-          // "x-hasura-admin-secret": import.meta.env
-          // 	.VITE_APP_HASURA_ADMIN_SECRET,
+          // authorization: 'Bearer ' + token,
+          'x-hasura-admin-secret': import.meta.env.VITE_APP_HASURA_ADMIN_SECRET,
         },
       },
     },

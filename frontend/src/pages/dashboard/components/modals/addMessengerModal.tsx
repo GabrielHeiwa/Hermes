@@ -20,15 +20,17 @@ import {
   Spinner,
 } from 'reactstrap';
 import { numbers } from '../..';
+import { USER_ID } from '../../../../constants/mock';
 import { GetMessagesGroupData, GetMessagesGroupVariables, GET_MESSAGES_GROUP } from '../../../../queries/messagesGroup';
 import {
   GetPhonesNumbersByUserIdData,
   GetPhonesNumbersByUserIdVariables,
   GET_PHONES_NUMBERS_BY_USER_ID,
 } from '../../../../queries/phonesNumbers';
+import { api } from '../../../../services/api';
 
 export interface NewMessenger {
-  name: string;
+  title: string;
   message: string;
   phone: string;
   start: Date;
@@ -62,10 +64,11 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
 
   // States
   const [loadingFile, setLoadingFile] = useState(false);
+  const [numbers, setNumbers] = useState<string[]>([]);
 
   // GraphQL
   const { data } = useQuery<GetMessagesGroupData, GetMessagesGroupVariables>(GET_MESSAGES_GROUP, {
-    variables: { userId: 'b245ea36-6e7e-4352-a7a4-fbd23424602a' },
+    variables: { userId: USER_ID },
   });
   const messagesGroupOptions = data?.messages_groups.map((mg) => ({ label: mg.title, value: mg.id }));
 
@@ -73,7 +76,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
     GET_PHONES_NUMBERS_BY_USER_ID,
     {
       variables: {
-        userId: 'b245ea36-6e7e-4352-a7a4-fbd23424602a',
+        userId: USER_ID,
       },
     },
   );
@@ -83,8 +86,26 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
   }));
 
   // Functions
-  function handleOnSubmit(data: NewMessenger) {
-    console.log(data);
+  async function handleOnSubmit(fields: NewMessenger) {
+    try {
+      const { data } = await api.post('/messenger/create', {
+        ...fields,
+        userId: USER_ID,
+        numbersToSend: numbers,
+      });
+      toast.success(data.message);
+      return;
+    } catch (err: any) {
+      const errMessage =
+        err.message ||
+        err.response?.data.message ||
+        err.response?.data.error ||
+        'Houve um erro ao criar a configuração do mensageiro';
+
+      toast.error(errMessage);
+
+      return;
+    }
 
     // messengers.push({
     //   id: messengers.length,
@@ -112,7 +133,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
 
         if (!content) return toast.error('Arquivo vazio');
         const numbers = content.toString().split(/\n|\r/gm);
-        console.log(numbers);
+        setNumbers(numbers);
 
         setTimeout(() => setLoadingFile((curr) => !curr), 3000);
       };
@@ -131,16 +152,16 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
       <ModalBody>
         <Form>
           <FormGroup>
-            <Label htmlFor="name">Nome</Label>
+            <Label htmlFor="name">Titúlo</Label>
             <Controller
-              name="name"
+              name="title"
               control={control}
               rules={{ required: 'Campo não pode estar vazio' }}
               render={({ field: { onChange } }) => (
-                <Input name="name" id="name" onChange={onChange} invalid={errors.name ? true : false} />
+                <Input name="name" id="name" onChange={onChange} invalid={errors.title ? true : false} />
               )}
             />
-            <FormFeedback>{errors.name?.message}</FormFeedback>
+            <FormFeedback>{errors.title?.message}</FormFeedback>
           </FormGroup>
 
           <FormGroup>

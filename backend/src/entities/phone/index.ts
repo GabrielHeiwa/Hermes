@@ -3,79 +3,79 @@ import type { ClientSession } from "whatsapp-web.js";
 import { prisma } from "../../database/connection";
 
 export interface PhoneProps {
-  id?: string;
-  phoneNumber: string;
-  description?: string;
-  userId: string;
-  session: string;
+	id?: string;
+	phoneNumber: string;
+	description?: string;
+	userId: string;
+	session: string;
 }
 
 class Phone {
-  private id?: string | undefined;
-  private phoneNumber: string;
-  private description?: string | undefined;
-  private userId: string;
-  private session: string;
+	private id?: string | undefined;
+	private phoneNumber: string;
+	private description?: string | undefined;
+	private userId: string;
+	private session: string;
 
-  constructor(props: PhoneProps) {
-    if (!props.id) this.id = randomUUID();
+	constructor(props: PhoneProps) {
+		if (!props.id) this.id = randomUUID();
 
-    Object.assign(this, props);
-    this.setSession(props.session);
-  }
+		Object.assign(this, props);
+		this.setSession(props.session);
+	}
 
-  // Methods
-  async save() {
-    try {
-      await prisma.phone.create({
-        data: {
-          phone_number: this.getPhoneNumber(),
-          description: this.getDescription(),
-          user_id_fk: this.getUserId(),
-          session: this.getSession(),
-        }
-      });
+	// Methods
+	async save() {
+		try {
+			await prisma.phone.create({
+				data: {
+					phone_number: this.getPhoneNumber(),
+					description: this.getDescription(),
+					user_id_fk: this.getUserId(),
+					session: this.getSession(),
+				},
+			});
 
-      return {
-        message: "Número de telefone adicionado com sucesso",
-        status: 201,
-      };
-    } catch (err: any) {
-      console.log(err);
-      
-      return {
-        message: "Erro ao adicionar o número de telefone no banco de dados",
-        status: 400,
-      };
-    }
-  }
+			return {
+				message: "Número de telefone adicionado com sucesso",
+				status: 201,
+			};
+		} catch (err: any) {
+			console.log(err);
 
-  // Getters and setters
-  getId() {
-    return this.id;
-  }
+			return {
+				message: "Erro ao adicionar o número de telefone no banco de dados",
+				status: 400,
+			};
+		}
+	}
 
-  getPhoneNumber() {
-    return this.phoneNumber;
-  }
+	// Getters and setters
+	getId() {
+		return this.id;
+	}
 
-  getDescription() {
-    return this.description;
-  }
+	getPhoneNumber() {
+		return this.phoneNumber;
+	}
 
-  getUserId() {
-    return this.userId;
-  }
+	getDescription() {
+		return this.description;
+	}
 
-  getSession() {
-    return this.session;
-  }
+	getUserId() {
+		return this.userId;
+	}
 
-  setSession(_session: string) {
-    this.session = _session;
+	getSession() {
+		return this.session;
+	}
 
-    return;
-  }
+	setSession(_session: string) {
+		this.session = _session;
+
+		return;
+	}
 }
 
 export { Phone };

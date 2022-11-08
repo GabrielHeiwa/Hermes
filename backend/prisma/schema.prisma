@@ -73,8 +73,8 @@ model Phones {
 model Messenger {
   id                  String              @id @default(uuid())
   title               String
-  hour_start          DateTime
-  hour_end            DateTime
+  hour_start          String
+  hour_end            String
   days_running        String
   phone_id_fk         String
   phone               Phone               @relation(fields: [phone_id_fk], references: [id])

@@ -20,6 +20,7 @@ import {
 } from '../../../../queries/messagesGroup';
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
+import { USER_ID } from '../../../../constants/mock';
 
 interface AddMessageGroupModalProps {
   handleCloseModal: () => void;
@@ -71,7 +72,7 @@ function AddMessageGroupModal(props: AddMessageGroupModalProps) {
       const messagesGroup = {
         id: v4(),
         title: messagesGroupTitle,
-        user_id_fk: 'b245ea36-6e7e-4352-a7a4-fbd23424602a',
+        user_id_fk: USER_ID,
         messages: { data: messages.filter((m) => m).map((m) => ({ id: v4(), message: m })) },
       };
 
