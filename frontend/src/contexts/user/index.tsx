@@ -1,5 +1,8 @@
-import { useQuery } from "@apollo/client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { meRequest } from '../../requests/meRequest';
 // import { GET_USER_DATA } from "../../services/graphql/queries/user";
 
 interface userProps {
@@ -10,7 +13,8 @@ interface userProps {
 
 interface userContextProps {
   user: userProps | undefined;
-  isAuthenticated: () => boolean;
+  isAuthenticated: () => Promise<boolean>;
+  logout: () => void;
 }
 
 export const userContext = createContext({} as userContextProps);
@@ -21,30 +25,39 @@ interface userProviderProps {
 
 export function UserProvider({ children }: userProviderProps) {
   // States
-  const [user, setUser] = useState<userProps>();
+  const [user] = useState<userProps>();
+
+  // Hooks
+  const [cookies, , removeCookie] = useCookies(['@hermes/userId']);
 
   // GraphQL
   // const { data } = useQuery<{ users: userProps[] }>(GET_USER_DATA);
 
   // Functions
-  function isAuthenticated() {
-    if (user?.email) return true;
+  async function isAuthenticated() {
+    try {
+      const userId = cookies['@hermes/userId'];
+      if (!userId) throw new Error('User id cookie not found');
 
-    return false;
+      await meRequest({ userId });
+      console.log(cookies);
+      return true;
+    } catch (error: any) {
+      console.error(error);
+      toast.error('Usuário não autenticado');
+      removeCookie('@hermes/userId');
+      window.location.replace('/');
+
+      return false;
+    }
   }
 
-  // useEffect
-  // useEffect(() => {
-  //   if (data) {
-  //     setUser(data.users[0])
-  //   }
-  // }, [data]);
+  function logout() {
+    removeCookie('@hermes/userId');
+    window.location.replace('/login');
+  }
 
-  return (
-    <userContext.Provider value={{ user, isAuthenticated }}>
-      {children}
-    </userContext.Provider>
-  );
+  return <userContext.Provider value={{ user, isAuthenticated, logout }}>{children}</userContext.Provider>;
 }
 
 export function useUser() {

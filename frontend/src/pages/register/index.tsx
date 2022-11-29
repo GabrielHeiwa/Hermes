@@ -1,46 +1,46 @@
 import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { loginRequest } from '../../requests/loginRequest';
+import { registerRequest } from '../../requests/registerRequest';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
 // TODO: Login user function
 
-interface LoginFormProps {
+interface RegisterFormProps {
   email?: string;
   password?: string;
 }
 
-interface LoginDataRequest {
+interface RegisterDataRequest {
   message: string;
   userId: string;
 }
 
-function Login() {
+function Register() {
   // Hooks
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<LoginFormProps>();
+  } = useForm<RegisterFormProps>();
   const [, setCookie] = useCookies(['@hermes/userId']);
   const navigate = useNavigate();
 
   // Functions
-  async function handleOnSubmit(data: LoginFormProps) {
+  async function handleOnSubmit(data: RegisterFormProps) {
     if (Object.values(data).includes(undefined)) return toast.error('Preecha todos os campos corretamente');
 
-    const loginData = {
+    const registerData = {
       email: data.email ?? '',
       password: data.password ?? '',
     };
 
     try {
-      const { userId, message } = await loginRequest<LoginDataRequest>(loginData);
+      const { userId, message } = await registerRequest<RegisterDataRequest>(registerData);
       setCookie('@hermes/userId', userId);
       toast.success(message);
-      window.location.replace('/dashboard');
+      navigate('/dashboard');
     } catch (err: any) {
       console.error(err);
       const errorMessage = err.message || err.response?.data.message || 'Erro ao tentar fazer o login';
@@ -98,4 +98,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

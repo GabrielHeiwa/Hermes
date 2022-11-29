@@ -5,10 +5,10 @@ import { MessengerProps } from '..';
 
 interface MessengerCardProps {
   messenger: MessengerProps;
-  handleStopMessenger: (id: number) => void;
-  handleStartMessenger: (id: number) => void;
+  handleStopMessenger: (id: string) => void;
+  handleStartMessenger: (id: string) => void;
   handleEditMessenger: (messenger: MessengerProps) => void;
-  handleRemoveMessenger: (id: number) => void;
+  handleRemoveMessenger: (id: string) => void;
 }
 
 function MessengerCard({

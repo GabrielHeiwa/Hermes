@@ -10,6 +10,9 @@ networks:
     external:
       false
 
+volumes:
+  db_data:
+
 services:
   hermes-postgres:
     image: postgres:12
@@ -52,17 +55,17 @@ services:
       - traefik.http.routers.hermes-hasura.rule=Host(`${URL_PREFIX}.hermes-hasura.${URL_POSFIX}`)
       - traefik.http.services.hermes-hasura.loadbalancer.server.port=8080
     
-  hermes-token-server:
-    container_name: hermes-token-server
-    build: 
-      context: ./token-server
-    ports:
-      - "3001:3001"
-    environment:
-      - PORT=3001
-    networks:
-      - internal
-      - traefik-proxy
+  # hermes-token-server:
+  #   container_name: hermes-token-server
+  #   build: 
+  #     context: ./token-server
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     - PORT=3001
+  #   networks:
+  #     - internal
+  #     - traefik-proxy
 
   # hermes-backend:
   #   container_name: hermes-backend
@@ -79,20 +82,18 @@ services:
   #     - traefik.http.routers.hermes-backend.tls.certresolver=${CERT_RESOLVER}
   #     - traefik.http.services.hermes-backend.loadbalancer.server.port=${BACKEND_PORT}
   
-  hermes-frontend:
-    container_name: hermes-frontend
-    build:
-      context: 
-        ./frontend
-    networks:
-      - internal
-      - traefik-proxy
-    labels:
-      # - traefik.http.routers.hermes-frontend.tls=${TLS}
-      # - traefik.http.routers.hermes-frontend.tls.certresolver=${CERT_RESOLVER}
-      - traefik.http.routers.hermes-frontend.rule=Host(`${URL_PREFIX}.hermes-frontend.${URL_POSFIX}`)
-      - traefik.http.routers.hermes-frontend.entrypoints=${ENTRYPOINTS}
-      - traefik.http.services.hermes-frontend.loadbalancer.server.port=${FRONTEND_PORT}
+  # hermes-frontend:
+  #   container_name: hermes-frontend
+  #   build:
+  #     context: 
+  #       ./frontend
+  #   networks:
+  #     - internal
+  #     - traefik-proxy
+  #   labels:
+  #     # - traefik.http.routers.hermes-frontend.tls=${TLS}
+  #     # - traefik.http.routers.hermes-frontend.tls.certresolver=${CERT_RESOLVER}
+  #     - traefik.http.routers.hermes-frontend.rule=Host(`${URL_PREFIX}.hermes-frontend.${URL_POSFIX}`)
+  #     - traefik.http.routers.hermes-frontend.entrypoints=${ENTRYPOINTS}
+  #     - traefik.http.services.hermes-frontend.loadbalancer.server.port=${FRONTEND_PORT}
     
-volumes:
-  db_data:

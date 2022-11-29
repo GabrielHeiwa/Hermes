@@ -4,7 +4,7 @@ import { MessengerProps } from '../../pages/dashboard';
 
 export const messengersData: MessengerProps[] = [
   {
-    id: 1,
+    id: '1',
     name: "Lead's 47",
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -18,7 +18,7 @@ export const messengersData: MessengerProps[] = [
     numbers: [],
   },
   {
-    id: 2,
+    id: '2',
     name: 'Notícias diárias',
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -32,7 +32,7 @@ export const messengersData: MessengerProps[] = [
     numbers: [],
   },
   {
-    id: 3,
+    id: '3',
     name: 'Alertas',
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -46,7 +46,7 @@ export const messengersData: MessengerProps[] = [
     numbers: [],
   },
   {
-    id: 4,
+    id: '4',
     name: 'Reuniões',
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -60,7 +60,7 @@ export const messengersData: MessengerProps[] = [
     numbers: [],
   },
   {
-    id: 5,
+    id: '5',
     name: 'CECOM',
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -74,7 +74,7 @@ export const messengersData: MessengerProps[] = [
     numbers: [],
   },
   {
-    id: 6,
+    id: '6',
     name: 'Editais',
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -88,7 +88,7 @@ export const messengersData: MessengerProps[] = [
     numbers: [],
   },
   {
-    id: 7,
+    id: '7',
     name: 'Curredoria',
     message:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam impedit provident tenetur excepturi maxime enim, repellendus numquam laborum possimus hic neque, exercitationem unde, vitae incidunt. Excepturi dolorem optio maxime error!',
@@ -104,7 +104,7 @@ export const messengersData: MessengerProps[] = [
 ];
 
 interface InitialState {
-  messengerIdSelected: number;
+  messengerIdSelected: string;
   messengers: MessengerProps[];
   visibleEditMessengerModal: boolean;
   visibleStopMessengerModal: boolean;
@@ -114,7 +114,7 @@ interface InitialState {
 }
 
 const initialState: InitialState = {
-  messengerIdSelected: -1,
+  messengerIdSelected: '',
   messengers: messengersData,
   visibleStartMessengerModal: false,
   visibleStopMessengerModal: false,
@@ -127,7 +127,7 @@ const dashboardSlice = createSlice({
   name: 'dashboardSlice',
   initialState,
   reducers: {
-    setSelectedMessengerId: (state, action: PayloadAction<number>) => {
+    setSelectedMessengerId: (state, action: PayloadAction<string>) => {
       state.messengerIdSelected = action.payload;
     },
 
