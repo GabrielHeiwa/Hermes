@@ -157,7 +157,7 @@ function Dashboard() {
         }
       }
 
-      setMessengers(_messengers);
+      // dispatch(setMessengers(_messengers));
     }
 
     if (error) {
@@ -200,7 +200,6 @@ function Dashboard() {
             </Dropdown>
           </Col>
         </Row>
-
         <Row className="m-1">
           {loading ? (
             <Spinner color="primary" />

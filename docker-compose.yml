@@ -46,13 +46,11 @@ services:
     networks:
       - internal
       - traefik-proxy
-    ports:
-      - "8080:8080"
     labels:
       # - traefik.http.routers.hermes-hasura.tls=${TLS}
       # - traefik.http.routers.hermes-hasura.tls.certresolver=${CERT_RESOLVER}
-      - traefik.http.routers.hermes-hasura.entrypoints=${ENTRYPOINTS}
-      - traefik.http.routers.hermes-hasura.rule=Host(`${URL_PREFIX}.hermes-hasura.${URL_POSFIX}`)
+      - traefik.http.routers.hermes-hasura.entrypoints=web
+      - traefik.http.routers.hermes-hasura.rule=Host(`${URL_PREFIX}.hasura.${URL_POSFIX}`)
       - traefik.http.services.hermes-hasura.loadbalancer.server.port=8080
     
   # hermes-token-server:

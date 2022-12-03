@@ -16,7 +16,7 @@ import {
 } from 'reactstrap';
 import { socket } from '../../../../services/io';
 import QrCode from 'qrcode';
-import { USER_ID } from '../../../../constants/mock';
+import { useUser } from '../../../../contexts/user';
 
 interface PhoneNumber {
   phone: string;
@@ -28,6 +28,9 @@ interface NewPhoneNumberProps {
 }
 
 function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
+  // Contexts
+  const { user } = useUser()
+
   // States
   const [show, setShow] = useState(false);
 
@@ -46,7 +49,7 @@ function NewPhoneNumberModal({ handleCloseModal }: NewPhoneNumberProps) {
     socket.emit('new-phone-number', {
       description: data.description,
       phoneNumber: data.phone,
-      userId: USER_ID,
+      userId: user?.id,
     });
 
     socket.on('new-phone-number-status', (data) => {

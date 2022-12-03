@@ -40,13 +40,10 @@ export function UserProvider({ children }: userProviderProps) {
       if (!userId) throw new Error('User id cookie not found');
 
       await meRequest({ userId });
-      console.log(cookies);
       return true;
     } catch (error: any) {
       console.error(error);
-      toast.error('Usuário não autenticado');
       removeCookie('@hermes/userId');
-      window.location.replace('/');
 
       return false;
     }

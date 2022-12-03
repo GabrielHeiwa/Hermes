@@ -16,6 +16,7 @@ model User {
   password      String
   Phone         Phone[]
   MessagesGroup MessagesGroup[]
+  Messenger     Messenger[]
 
   @@map("users")
 }
@@ -77,10 +78,12 @@ model Messenger {
   hour_end            String
   days_running        String
   phone_id_fk         String
+  user                User                @relation(fields: [userId], references: [id])
   phone               Phone               @relation(fields: [phone_id_fk], references: [id])
   message_group_id_fk String
   message_group       MessagesGroup       @relation(fields: [message_group_id_fk], references: [id])
   phone_numbers_group PhoneNumbersGroup[]
+  userId              String
 
   @@map("messengers")
 }

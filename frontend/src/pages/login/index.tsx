@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { loginRequest } from '../../requests/loginRequest';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useUser } from '../../contexts/user';
 
 // TODO: Login user function
 
@@ -17,7 +19,12 @@ interface LoginDataRequest {
   userId: string;
 }
 
+let isCalling = false;
+
 function Login() {
+  // Contexts
+  const { isAuthenticated } = useUser();
+
   // Hooks
   const {
     handleSubmit,
@@ -49,6 +56,19 @@ function Login() {
 
     return;
   }
+
+  useEffect(() => {
+    (async () => {
+      if (!isCalling) {
+        isCalling = !isCalling;
+        const authenticated = await isAuthenticated();
+
+        authenticated ? navigate('/dashboard') : toast.error('Usuário não autenticado');
+
+        isCalling = !isCalling;
+      }
+    })();
+  }, []);
 
   return (
     <div style={{ height: '100vh' }} className="w-100 d-flex align-items-center justify-content-center">
