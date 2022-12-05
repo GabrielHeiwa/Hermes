@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export interface GetPhonesNumbersByUserIdVariables {
-  userId: string;
+  userId?: string;
 }
 
 export interface GetPhonesNumbersByUserIdData {

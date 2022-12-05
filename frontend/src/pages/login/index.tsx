@@ -63,7 +63,7 @@ function Login() {
         isCalling = !isCalling;
         const authenticated = await isAuthenticated();
 
-        authenticated ? navigate('/dashboard') : toast.error('Usuário não autenticado');
+        authenticated ? navigate('/dashboard') : null;
 
         isCalling = !isCalling;
       }

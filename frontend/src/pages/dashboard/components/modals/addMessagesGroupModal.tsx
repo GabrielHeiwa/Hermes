@@ -21,6 +21,7 @@ import {
 import { toast } from 'react-toastify';
 import { v4 } from 'uuid';
 import { USER_ID } from '../../../../constants/mock';
+import { useUser } from '../../../../contexts/user';
 
 interface AddMessageGroupModalProps {
   handleCloseModal: () => void;
@@ -37,6 +38,9 @@ const styles: Record<string, React.CSSProperties> = {
 function AddMessageGroupModal(props: AddMessageGroupModalProps) {
   // Props
   const { handleCloseModal } = props;
+
+  // Contexts
+  const { user } = useUser();
 
   // States
   const [messages, setMessages] = useState<string[]>(['', '']);
@@ -72,7 +76,7 @@ function AddMessageGroupModal(props: AddMessageGroupModalProps) {
       const messagesGroup = {
         id: v4(),
         title: messagesGroupTitle,
-        user_id_fk: USER_ID,
+        user_id_fk: user?.id,
         messages: { data: messages.filter((m) => m).map((m) => ({ id: v4(), message: m })) },
       };
 

@@ -22,6 +22,7 @@ interface CreateMessengerRequestBodyType {
 	message: { label: string; value: string };
 	phone: { label: string; value: string };
 	numbersToSend: string[];
+	userId: string;
 }
 
 class MessengerController {
@@ -47,6 +48,7 @@ class MessengerController {
 			message,
 			phone,
 			numbersToSend,
+			userId,
 		} = req.body;
 
 		const messengerId = randomUUID();
@@ -61,6 +63,7 @@ class MessengerController {
 				id: messengerId,
 				message_group_id_fk: message.value,
 				phone_id_fk: phone.value,
+				userId,
 			},
 		});
 

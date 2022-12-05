@@ -25,7 +25,7 @@ interface userProviderProps {
 
 export function UserProvider({ children }: userProviderProps) {
   // States
-  const [user] = useState<userProps>();
+  const [user, setUser] = useState<userProps>();
 
   // Hooks
   const [cookies, , removeCookie] = useCookies(['@hermes/userId']);
@@ -53,6 +53,11 @@ export function UserProvider({ children }: userProviderProps) {
     removeCookie('@hermes/userId');
     window.location.replace('/login');
   }
+
+  useEffect(() => {
+    const userId = cookies['@hermes/userId'];
+    setUser({ id: userId, email: '', name: '' });
+  }, []);
 
   return <userContext.Provider value={{ user, isAuthenticated, logout }}>{children}</userContext.Provider>;
 }

@@ -157,7 +157,7 @@ function Dashboard() {
         }
       }
 
-      // dispatch(setMessengers(_messengers));
+      dispatch(setMessengers(_messengers));
     }
 
     if (error) {

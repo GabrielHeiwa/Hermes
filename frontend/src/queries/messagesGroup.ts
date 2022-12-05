@@ -21,7 +21,7 @@ export const INSERT_MESSAGES_GROUP = gql`
 `;
 
 export interface GetMessagesGroupVariables {
-  userId: string;
+  userId?: string;
 }
 
 export interface GetMessagesGroupData {

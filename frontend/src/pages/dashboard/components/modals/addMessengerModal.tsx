@@ -21,6 +21,7 @@ import {
 } from 'reactstrap';
 import { numbers } from '../..';
 import { USER_ID } from '../../../../constants/mock';
+import { useUser } from '../../../../contexts/user';
 import { GetMessagesGroupData, GetMessagesGroupVariables, GET_MESSAGES_GROUP } from '../../../../queries/messagesGroup';
 import {
   GetPhonesNumbersByUserIdData,
@@ -54,6 +55,9 @@ export const daysOfWeekOptions = [
 ];
 
 function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
+  // Contexts
+  const { user } = useUser();
+
   // Hooks
   const {
     control,
@@ -68,7 +72,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
 
   // GraphQL
   const { data } = useQuery<GetMessagesGroupData, GetMessagesGroupVariables>(GET_MESSAGES_GROUP, {
-    variables: { userId: USER_ID },
+    variables: { userId: user?.id },
   });
   const messagesGroupOptions = data?.messages_groups.map((mg) => ({ label: mg.title, value: mg.id }));
 
@@ -76,7 +80,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
     GET_PHONES_NUMBERS_BY_USER_ID,
     {
       variables: {
-        userId: USER_ID,
+        userId: user?.id,
       },
     },
   );
@@ -90,7 +94,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
     try {
       const { data } = await api.post('/messenger/create', {
         ...fields,
-        userId: USER_ID,
+        userId: user?.id,
         numbersToSend: numbers,
       });
       toast.success(data.message);
