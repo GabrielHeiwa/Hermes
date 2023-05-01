@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { Request, Response } from "express";
 import { prisma } from "../database/connection";
+import { WwClient } from "../repositories/ww-client";
 
 const CREATE_MESSENGER_OBRIGATORY_FIELDS = [
 	"daysOfWeek",
@@ -79,7 +80,7 @@ class MessengerController {
 		for (const phone of numbersToSend) {
 			dataPhones.push({
 				phone_number: phone,
-				phone_number_group_id: phoneNumbersGroupId,
+				messenger_id: messengerId,
 				id: randomUUID(),
 			});
 		}
@@ -94,11 +95,15 @@ class MessengerController {
 	}
 
 	async start(req: Request, res: Response) {
-		res.send("ok");
+		const { messengerId } = req.params;
+		const wwClient = new WwClient(messengerId);
+		await wwClient.start(res);
 	}
 
 	async stop(req: Request, res: Response) {
-		res.send("ok");
+		const { messengerId } = req.params;
+		const wwClient = new WwClient(messengerId);
+		await wwClient.stop(res);
 	}
 
 	async remove(req: Request, res: Response) {

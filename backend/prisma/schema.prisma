@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,21 +11,21 @@ model User {
   id            String          @id @default(uuid())
   email         String          @unique
   password      String
-  Phone         Phone[]
   MessagesGroup MessagesGroup[]
   Messenger     Messenger[]
+  Phone         Phone[]
 
   @@map("users")
 }
 
 model Phone {
   id           String      @id @default(uuid())
-  phone_number String
   description  String?
+  phone_number String
   session      String
   user_id_fk   String
-  user         User        @relation(fields: [user_id_fk], references: [id])
   Messenger    Messenger[]
+  user         User        @relation(fields: [user_id_fk], references: [id])
 
   @@map("phone_numbers")
 }
@@ -37,8 +34,8 @@ model MessagesGroup {
   id         String      @id @default(uuid())
   title      String
   user_id_fk String
-  user       User        @relation(fields: [user_id_fk], references: [id])
   messages   Message[]
+  user       User        @relation(fields: [user_id_fk], references: [id])
   messengers Messenger[]
 
   @@map("messages_groups")
@@ -47,8 +44,8 @@ model MessagesGroup {
 model Message {
   id                   String        @id @default(uuid())
   message              String
-  message_group        MessagesGroup @relation(fields: [messages_group_id_fk], references: [id])
   messages_group_id_fk String
+  message_group        MessagesGroup @relation(fields: [messages_group_id_fk], references: [id])
 
   @@map("messages")
 }
@@ -57,16 +54,17 @@ model PhoneNumbersGroup {
   id              String    @id @default(uuid())
   messenger_id_fk String
   messenger       Messenger @relation(fields: [messenger_id_fk], references: [id])
-  phone_numbers   Phones[]
 
   @@map("phone_numbers_group")
 }
 
 model Phones {
-  id                    String            @id @default(uuid())
-  phone_number          String
-  phone_numbers_group   PhoneNumbersGroup @relation(fields: [phone_number_group_id], references: [id])
-  phone_number_group_id String
+  id           String    @id @default(uuid())
+  phone_number String
+  messenger_id String
+  already_send Boolean   @default(false)
+  send_in      DateTime? @db.Timestamptz(6)
+  Messenger    Messenger @relation(fields: [messenger_id], references: [id])
 
   @@map("phones")
 }
@@ -78,12 +76,13 @@ model Messenger {
   hour_end            String
   days_running        String
   phone_id_fk         String
-  user                User                @relation(fields: [userId], references: [id])
-  phone               Phone               @relation(fields: [phone_id_fk], references: [id])
   message_group_id_fk String
-  message_group       MessagesGroup       @relation(fields: [message_group_id_fk], references: [id])
-  phone_numbers_group PhoneNumbersGroup[]
   userId              String
+  message_group       MessagesGroup       @relation(fields: [message_group_id_fk], references: [id])
+  phone               Phone               @relation(fields: [phone_id_fk], references: [id])
+  user                User                @relation(fields: [userId], references: [id])
+  phone_numbers_group PhoneNumbersGroup[]
+  Phones              Phones[]
 
   @@map("messengers")
 }

@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { setMessengers } from '../../../../redux/reducers/dashboardReducer';
+import { api } from '../../../../services/api';
 
 interface StopMessengerModalProps {
   handleCloseModal: () => void;
@@ -13,7 +14,7 @@ function StopMessengerModal({ handleCloseModal }: StopMessengerModalProps) {
   const { messengerIdSelected, messengers } = useAppSelector((state) => state.dashboardReducer);
 
   // Functions
-  function handleStopMessenger() {
+  async function handleStopMessenger() {
     const auxMessengers = [...messengers];
     const index = auxMessengers.findIndex((messenger) => messengerIdSelected === messenger.id);
 
@@ -25,6 +26,7 @@ function StopMessengerModal({ handleCloseModal }: StopMessengerModalProps) {
     }
 
     const messenger = auxMessengers[index];
+    await api.post("/messenger/stop/" + messenger.id);
 
     if (messenger.running === false) {
       toast.warning('Mensageiro já está parado');

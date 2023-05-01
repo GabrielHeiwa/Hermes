@@ -30,9 +30,11 @@ io.on("connection", (socket) => {
 	);
 
 	socket.on("new-phone-number", (payload: PhoneProps) => {
+		const session = payload.userId + socket.id;
+
 		const client = new Client({
 			puppeteer: { headless: false },
-			authStrategy: new LocalAuth({ clientId: socket.id }),
+			authStrategy: new LocalAuth({ clientId: session }),
 		});
 
 		client.initialize().catch((err) => {
@@ -51,9 +53,8 @@ io.on("connection", (socket) => {
 			try {
 				const _phone = {
 					...payload,
-					session: randomUUID(),
+					session,
 				};
-				console.log({ _phone });
 
 				const phone = new Phone(_phone);
 				phone.save();
@@ -62,6 +63,8 @@ io.on("connection", (socket) => {
 					"new-phone-number-status",
 					true
 				);
+
+				client.destroy();
 			} catch (err: any) {
 				console.log(err);
 				io.to(socket.id).emit(

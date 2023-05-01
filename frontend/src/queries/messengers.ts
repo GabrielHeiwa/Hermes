@@ -9,6 +9,7 @@ export interface getAllMessengersByUserIdData {
     phone_numbers: {
       id: string;
       phone_number: string;
+      session: string;
       messengers: {
         days_running: string;
         hour_end: string;
@@ -26,6 +27,9 @@ export const GET_ALL_MESSENGERS_BY_USER_ID = gql`
   subscription getAllMessengersByUserId($user_id: String!) {
     users_by_pk(id: $user_id) {
       phone_numbers {
+        id
+        phone_number
+        session
         messengers {
           days_running
           hour_end
@@ -34,9 +38,12 @@ export const GET_ALL_MESSENGERS_BY_USER_ID = gql`
           message_group_id_fk
           phone_id_fk
           title
+          phones_aggregate {
+            aggregate {
+              count
+            }
+          }
         }
-        id
-        phone_number
       }
     }
   }

@@ -136,7 +136,7 @@ function AddMessengerModal({ handleCloseModal }: AddMessengerModalProps) {
         const content = target?.result;
 
         if (!content) return toast.error('Arquivo vazio');
-        const numbers = content.toString().split(/\n|\r/gm);
+        const numbers = content.toString().split(/\n|\r/gm).filter(number => !!number);
         setNumbers(numbers);
 
         setTimeout(() => setLoadingFile((curr) => !curr), 3000);
